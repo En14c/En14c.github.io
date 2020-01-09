@@ -6,17 +6,24 @@
   <meta http-equiv="cache-control" content="no-cache">
   <meta http-equiv="expires" content="0">
   
-  <title>overthewire.bandit.lvl[15-16] | 0xFEE1DEAD</title>
+  <title>overthewire.bandit.lvl[22-23] | 0xFEE1DEAD</title>
   <meta name="author" content="Mustafa Algayar">
   
   <meta name="description" content="Level Goal
-the password for the next level can be retrieved by submitting the password of the current level to port 30001 on localhost using SSL encryption
-overthewire.bandit.lvl[15-16]"> 
+a program is running automatically at regualr intervals from cron, the time based job scheduler. look in /etc/cron.d/ for the configuration and see what command is being executed.NOTE: looking at shell scripts written by other people is very useful skill. the script for this level is intentionally made easy to read. if you are having problems understanding what it does, try executing it to see the debug information it prints.
+overthewire.bandit.lvl[22-23]
+
+Solution
+let’s begin by ls(1) the /etc/cron.d/ directory
+
+now we cat(1) the file named cronjob_bandit23 and see if it contains tasks for user bandit23.
+
+we can see that the cron service will run file /usr/bin/cronjob_bandit23.sh every minute, so let’s get some information about this file."> 
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="overthewire.bandit.lvl[15-16]"/>
+  <meta property="og:title" content="overthewire.bandit.lvl[22-23]"/>
   <meta property="og:site_name" content="0xFEE1DEAD"/>
 
   
@@ -92,7 +99,7 @@ overthewire.bandit.lvl[15-16]">
 
 	
 		<div class="page-header">
-			<h1> overthewire.bandit.lvl[15-16]</h1>
+			<h1> overthewire.bandit.lvl[22-23]</h1>
 		</div>
 	
 
@@ -110,19 +117,30 @@ overthewire.bandit.lvl[15-16]">
 	  		
 
 	  <h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
-<blockquote><p>the password for the next level can be retrieved by submitting the password of the current level to port 30001 on localhost using SSL encryption</p>
-<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit16.html" target="_blank" rel="noopener">lvl[15-16]</a></cite></footer></blockquote>
-
-<a id="more"></a>
+<blockquote><p>a program is running automatically at regualr intervals from cron, the time based job scheduler. look in /etc/cron.d/ for the configuration and see what command is being executed.<br>NOTE: looking at shell scripts written by other people is very useful skill. the script for this level is intentionally made easy to read. if you are having problems understanding what it does, try executing it to see the debug information it prints.</p>
+<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit23.html" target="_blank" rel="noopener">lvl[22-23]</a></cite></footer></blockquote>
 
 <h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
-<p>we will connect to the service using openssl’s s_client and provide it the password of the current level, after that we will be rewarded with next level’s password<br><img src="/images/ctf/wargames/overthewire/bandit/lvl15-16/01.png" alt="img01"></p>
+<p>let’s begin by ls(1) the /etc/cron.d/ directory</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl22-23/01.png" alt="img01"></p>
+<p>now we cat(1) the file named cronjob_bandit23 and see if it contains tasks for user bandit23.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl22-23/02.png" alt="img02"></p>
+<p>we can see that the cron service will run file /usr/bin/cronjob_bandit23.sh every minute, so let’s get some information about this file.</p>
+<a id="more"></a>
+
+<p>running file(1) on the file /usr/bin/cronjob_bandit23.sh, we find out that it’s a bash script. </p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl22-23/03.png" alt="img03"></p>
+<p>let’s cat(1) this bash script to seet it’s contents.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl22-23/04.png" alt="img04"></p>
+<p>well, the script calculates the <a href="https://en.wikipedia.org/wiki/MD5" target="_blank" rel="noopener">MD5 digest</a> of the standard input, then uses <a href="http://man7.org/linux/man-pages/man1/cut.1.html" target="_blank" rel="noopener">cut(1)</a> to remove every section of the line in the standard input except for the MD5 digest.</p>
+<p>knowing this we can construct the following command, execute it, get next level’s password and we are done!.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl22-23/05.png" alt="img05"></p>
 
 	  
 	</div>
 
 	
-	<span id="/2020/01/07/overthewire-bandit-lvl15-16/" class="leancloud-visitors view" data-flag-title="overthewire.bandit.lvl[15-16]">
+	<span id="/2020/01/09/overthewire-bandit-lvl22-23/" class="leancloud-visitors view" data-flag-title="overthewire.bandit.lvl[22-23]">
 		<em class="post-meta-item-text"> Page View </em> <i class="leancloud-visitors-count"></i>
 	</span>
 	
@@ -133,13 +151,12 @@ overthewire.bandit.lvl[15-16]">
 
     
     
-    <a href="/2020/01/07/overthewire-bandit-lvl16-17/" type="button" class="btn btn-default"><i
-                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    <a type="button" class="btn btn-default disabled"><i class="fa fa-arrow-circle-o-left"></i>Prev</a>
     
 
     <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
     
-    <a href="/2020/01/07/overthewire-bandit-lvl14-15/" type="button" class="btn btn-default ">Next<i
+    <a href="/2020/01/09/overthewire-bandit-lvl21-22/" type="button" class="btn btn-default ">Next<i
                 class="fa fa-arrow-circle-o-right"></i></a>
     
 
@@ -171,7 +188,7 @@ overthewire.bandit.lvl[15-16]">
 	
 	<div class="meta-widget">
 	<i class="fa fa-clock-o"></i>
-	2020-01-07 
+	2020-01-09 
 	</div>
 	
 

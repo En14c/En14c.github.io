@@ -113,6 +113,64 @@
 <div class="row">
 	<div class="col-md-8">
 		<h3 class="title">
+			<a href="/2020/01/09/overthewire-bandit-lvl22-23/" >overthewire.bandit.lvl[22-23]</a>
+		</h3>
+		</div>
+	<div class="col-md-4">
+		<div class="date">post @ 2020-01-09  </div>
+		</div>
+	</div>
+	
+
+
+			<!--
+<div class="entry">
+  <div class="row">
+	
+	
+		<h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
+<blockquote><p>a program is running automatically at regualr intervals from cron, the time based job scheduler. look in /etc/cron.d/ for the configuration and see what command is being executed.<br>NOTE: looking at shell scripts written by other people is very useful skill. the script for this level is intentionally made easy to read. if you are having problems understanding what it does, try executing it to see the debug information it prints.</p>
+<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit23.html" target="_blank" rel="noopener">lvl[22-23]</a></cite></footer></blockquote>
+
+<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
+<p>let’s begin by ls(1) the /etc/cron.d/ directory</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl22-23/01.png" alt="img01"></p>
+<p>now we cat(1) the file named cronjob_bandit23 and see if it contains tasks for user bandit23.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl22-23/02.png" alt="img02"></p>
+<p>we can see that the cron service will run file /usr/bin/cronjob_bandit23.sh every minute, so let’s get some information about this file.</p>
+	
+
+	</div>
+  <a type="button" href="/2020/01/09/overthewire-bandit-lvl22-23/#more" class="btn btn-default more">Read More</a>
+</div>
+
+-->
+<div class="entry">
+  <div class="row">
+	
+	
+		<h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
+<blockquote><p>a program is running automatically at regualr intervals from cron, the time based job scheduler. look in /etc/cron.d/ for the configuration and see what command is being executed.<br>NOTE: looking at shell scripts written by other people is very useful skill. the script for this level is intentionally made easy to read. if you are having problems understanding what it does, try executing it to see the debug information it prints.</p>
+<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit23.html" target="_blank" rel="noopener">lvl[22-23]</a></cite></footer></blockquote>
+
+<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
+<p>let’s begin by ls(1) the /etc/cron.d/ directory</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl22-23/01.png" alt="img01"></p>
+<p>now we cat(1) the file named cronjob_bandit23 and see if it contains tasks for user bandit23.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl22-23/02.png" alt="img02"></p>
+<p>we can see that the cron service will run file /usr/bin/cronjob_bandit23.sh every minute, so let’s get some information about this file.</p>
+	
+	</div>
+  <a type="button" href="/2020/01/09/overthewire-bandit-lvl22-23/#more" class="btn btn-default more">Read More</a>
+</div>
+
+		
+			
+	
+	<!-- display as entry -->
+<div class="row">
+	<div class="col-md-8">
+		<h3 class="title">
 			<a href="/2020/01/09/overthewire-bandit-lvl21-22/" >overthewire.bandit.lvl[21-22]</a>
 		</h3>
 		</div>
@@ -557,60 +615,6 @@
 </div>
 
 		
-			
-	
-	<!-- display as entry -->
-<div class="row">
-	<div class="col-md-8">
-		<h3 class="title">
-			<a href="/2020/01/07/overthewire-bandit-lvl12-13/" >overthewire.bandit.lvl[12-13]</a>
-		</h3>
-		</div>
-	<div class="col-md-4">
-		<div class="date">post @ 2020-01-07  </div>
-		</div>
-	</div>
-	
-
-
-			<!--
-<div class="entry">
-  <div class="row">
-	
-	
-		<h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
-<blockquote><p>The password for the next level is stored in the file data.txt which is the hexdump of a file that hash been repeatedly compressed. For this level it may be useful to create a directory under /tmp in which you can work using mkdir. For example: mkdir /tmp/myname123. Then copy the datafile using cp, and renamed it using mv (read the manpages!)</p>
-<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit9.html" target="_blank" rel="noopener">lvl12-13</a></cite></footer></blockquote>
-
-
-<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
-<p>first we create our playground directory and make it our <a href="https://en.wikipedia.org/wiki/Working_directory" target="_blank" rel="noopener">CWD</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd $(mktemp -d)</span><br></pre></td></tr></table></figure>
-	
-
-	</div>
-  <a type="button" href="/2020/01/07/overthewire-bandit-lvl12-13/#more" class="btn btn-default more">Read More</a>
-</div>
-
--->
-<div class="entry">
-  <div class="row">
-	
-	
-		<h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
-<blockquote><p>The password for the next level is stored in the file data.txt which is the hexdump of a file that hash been repeatedly compressed. For this level it may be useful to create a directory under /tmp in which you can work using mkdir. For example: mkdir /tmp/myname123. Then copy the datafile using cp, and renamed it using mv (read the manpages!)</p>
-<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit9.html" target="_blank" rel="noopener">lvl12-13</a></cite></footer></blockquote>
-
-
-<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
-<p>first we create our playground directory and make it our <a href="https://en.wikipedia.org/wiki/Working_directory" target="_blank" rel="noopener">CWD</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd $(mktemp -d)</span><br></pre></td></tr></table></figure>
-	
-	</div>
-  <a type="button" href="/2020/01/07/overthewire-bandit-lvl12-13/#more" class="btn btn-default more">Read More</a>
-</div>
-
-		
 
 		</div>
 
@@ -620,6 +624,16 @@
 		<div class="pagination">
 
    
+    
+           <a type="button" class="btn btn-default disabled"><i class="fa fa-arrow-circle-o-left"></i>Prev</a>
+        
+
+        <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+ 
+       <a href="/page/2/" type="button" class="btn btn-default ">Next<i class="fa fa-arrow-circle-o-right"></i></a>     
+        
+
+  
 </div>
 
   		</center>
@@ -640,13 +654,13 @@
 		<h4>Tag Cloud</h4>
 		<ul class="tag_box inline list-unstyled">		
 		
-			<li><a href="/tags/ctf/">ctf<span>10</span></a></li>
+			<li><a href="/tags/linux/">linux<span>11</span></a></li>
 		
-			<li><a href="/tags/wargames/">wargames<span>10</span></a></li>
+			<li><a href="/tags/overthewire/">overthewire<span>11</span></a></li>
 		
-			<li><a href="/tags/linux/">linux<span>10</span></a></li>
+			<li><a href="/tags/ctf/">ctf<span>11</span></a></li>
 		
-			<li><a href="/tags/overthewire/">overthewire<span>10</span></a></li>
+			<li><a href="/tags/wargames/">wargames<span>11</span></a></li>
 		
 		 
 		</ul>
@@ -658,6 +672,10 @@
 <div class="widget">
   <h4>Recent Posts</h4>
   <ul class="entry list-unstyled">
+    
+      <li>
+        <a href="/2020/01/09/overthewire-bandit-lvl22-23/" ><i class="fa fa-file-o"></i>overthewire.bandit.lvl[22-23]</a>
+      </li>
     
       <li>
         <a href="/2020/01/09/overthewire-bandit-lvl21-22/" ><i class="fa fa-file-o"></i>overthewire.bandit.lvl[21-22]</a>
@@ -673,10 +691,6 @@
     
       <li>
         <a href="/2020/01/09/overthewire-bandit-lvl18-19/" ><i class="fa fa-file-o"></i>overthewire.bandit.lvl[18-19]</a>
-      </li>
-    
-      <li>
-        <a href="/2020/01/09/overthewire-bandit-lvl17-18/" ><i class="fa fa-file-o"></i>overthewire.bandit.lvl[17-18]</a>
       </li>
     
   </ul>
