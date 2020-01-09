@@ -10,7 +10,11 @@
   <meta name="author" content="Mustafa Algayar">
   
   <meta name="description" content="Level Goal
-there is a setuid executable in the homedirectory that does the following: it makes a connection to localhost on the port you specify as a ">
+there is a setuid executable in the homedirectory that does the following: it makes a connection to localhost on the port you specify as a commandline argument. it then reads a line of text from the connection and compares it to the password in the previous level (bandit20). if the password is correct, it will transmit the password for the next level (bandit21).
+overthewire.bandit.lvl[20-21]
+
+Solution
+this challenge is all about shell job control."> 
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -114,6 +118,8 @@ there is a setuid executable in the homedirectory that does the following: it ma
 
 <h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
 <p>this challenge is all about <a href="https://en.wikipedia.org/wiki/Job_control_(Unix)" target="_blank" rel="noopener">shell job control</a>.</p>
+<a id="more"></a>
+
 <p>so first we will use <a href="https://linux.die.net/man/1/nc" target="_blank" rel="noopener">nc(1)</a> to create a server that listen port 40000 and connects to it with the setuid executable in the home directory.</p>
 <p><img src="/images/ctf/wargames/overthewire/bandit/lvl20-21/01.png" alt="img01"></p>
 <p>now we will put the nc(1) process in the foreground and supply the password for user bandit20.</p>
