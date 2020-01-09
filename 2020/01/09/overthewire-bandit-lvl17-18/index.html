@@ -6,22 +6,17 @@
   <meta http-equiv="cache-control" content="no-cache">
   <meta http-equiv="expires" content="0">
   
-  <title>overthewire.bandit.lvl[12-13] | 0xFEE1DEAD</title>
+  <title>overthewire.bandit.lvl[17-18] | 0xFEE1DEAD</title>
   <meta name="author" content="Mustafa Algayar">
   
   <meta name="description" content="Level Goal
-The password for the next level is stored in the file data.txt which is the hexdump of a file that hash been repeatedly compressed. For this level it may be useful to create a directory under /tmp in which you can work using mkdir. For example: mkdir /tmp/myname123. Then copy the datafile using cp, and renamed it using mv (read the manpages!)
-overthewire.bandit.lvl12-13
-
-
-Solution
-first we create our playground directory and make it our CWD
-1cd $(mktemp -d)"> 
+there are 2 files in the homedirectory: passwords.old and passwords.new. the password for the next level is in passwords.new and is the only line that has been changed between passwords.old and passwords.newNOTE: if you have solved this level and see ‘Byebye!’ when trying to log into bandit18, this is related to the next level, bandit19
+overthewire.bandit.lvl[17-18]"> 
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="overthewire.bandit.lvl[12-13]"/>
+  <meta property="og:title" content="overthewire.bandit.lvl[17-18]"/>
   <meta property="og:site_name" content="0xFEE1DEAD"/>
 
   
@@ -97,7 +92,7 @@ first we create our playground directory and make it our CWD
 
 	
 		<div class="page-header">
-			<h1> overthewire.bandit.lvl[12-13]</h1>
+			<h1> overthewire.bandit.lvl[17-18]</h1>
 		</div>
 	
 
@@ -115,34 +110,21 @@ first we create our playground directory and make it our CWD
 	  		
 
 	  <h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
-<blockquote><p>The password for the next level is stored in the file data.txt which is the hexdump of a file that hash been repeatedly compressed. For this level it may be useful to create a directory under /tmp in which you can work using mkdir. For example: mkdir /tmp/myname123. Then copy the datafile using cp, and renamed it using mv (read the manpages!)</p>
-<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit9.html" target="_blank" rel="noopener">lvl12-13</a></cite></footer></blockquote>
-
-
-<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
-<p>first we create our playground directory and make it our <a href="https://en.wikipedia.org/wiki/Working_directory" target="_blank" rel="noopener">CWD</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd $(mktemp -d)</span><br></pre></td></tr></table></figure>
+<blockquote><p>there are 2 files in the homedirectory: passwords.old and passwords.new. the password for the next level is in passwords.new and is the only line that has been changed between passwords.old and passwords.new<br>NOTE: if you have solved this level and see ‘Byebye!’ when trying to log into bandit18, this is related to the next level, bandit19</p>
+<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit18.html" target="_blank" rel="noopener">lvl[17-18]</a></cite></footer></blockquote>
 
 <a id="more"></a>
 
-<p>now we convert the hexdump into the original binary that was hexdumped.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xxd -r data.txt data.bin</span><br></pre></td></tr></table></figure>
-
-<p>checking the file format for the generated binary we find that it has been compressed with gzip.<br><img src="/images/ctf/wargames/overthewire/bandit/lvl12-13/01.png" alt="img01"></p>
-<p>there is 2 methods for decompressing this file (we will stick to the second method for the rest of the writeup).</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># method_1</span></span><br><span class="line">mv data.bin data.bin.gz; gzip -d data.bin.gz</span><br><span class="line"><span class="comment"># method_2</span></span><br><span class="line">gzip -d -S ary data.binary</span><br></pre></td></tr></table></figure>
-
-<p>either ways the generated binary file will be named data.bin. lets get some information about it<br><img src="/images/ctf/wargames/overthewire/bandit/lvl12-13/02.png" alt="img02"></p>
-<p>well, it’s a bzip2 compressed binary. now decompressing it and getting info about the<br>generated binary we find that it’s a gzip compressed binary<br><img src="/images/ctf/wargames/overthewire/bandit/lvl12-13/03.png" alt="img03"></p>
-<p>decompressing the generated binary and getting info about it. we find it’s a POSIX tar archive<br><img src="/images/ctf/wargames/overthewire/bandit/lvl12-13/04.png" alt="img04"></p>
-<p>we continue the process of decompressing and getting info about generated binaries until we are presented with an ASCII text file<br><img src="/images/ctf/wargames/overthewire/bandit/lvl12-13/05.png" alt="img05"></p>
-<p>and, finally we got the password for user bandit13<br><img src="/images/ctf/wargames/overthewire/bandit/lvl12-13/06.png" alt="img06"></p>
+<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
+<p>we will use the <a href="http://man7.org/linux/man-pages/man1/diff.1.html" target="_blank" rel="noopener">diff</a> command to get the differences between the two files</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl17-18/01.png" alt="img01"></p>
+<p>as we can see the change is at line 42, and the password for user bandit18 is kfBf3eYk5BPBRzwjqutbbfE887SVc5Yd</p>
 
 	  
 	</div>
 
 	
-	<span id="/2020/01/07/overthewire-bandit-lvl12-13/" class="leancloud-visitors view" data-flag-title="overthewire.bandit.lvl[12-13]">
+	<span id="/2020/01/09/overthewire-bandit-lvl17-18/" class="leancloud-visitors view" data-flag-title="overthewire.bandit.lvl[17-18]">
 		<em class="post-meta-item-text"> Page View </em> <i class="leancloud-visitors-count"></i>
 	</span>
 	
@@ -153,13 +135,14 @@ first we create our playground directory and make it our CWD
 
     
     
-    <a href="/2020/01/07/overthewire-bandit-lvl13-14/" type="button" class="btn btn-default"><i
+    <a href="/2020/01/09/overthewire-bandit-lvl18-19/" type="button" class="btn btn-default"><i
                 class="fa fa-arrow-circle-o-left"></i> Prev</a>
     
 
     <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
     
-    <a type="button" class="btn btn-default disabled">Next<i class="fa fa-arrow-circle-o-right"></i></a>
+    <a href="/2020/01/07/overthewire-bandit-lvl16-17/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
     
 
     
@@ -190,7 +173,7 @@ first we create our playground directory and make it our CWD
 	
 	<div class="meta-widget">
 	<i class="fa fa-clock-o"></i>
-	2020-01-07 
+	2020-01-09 
 	</div>
 	
 
