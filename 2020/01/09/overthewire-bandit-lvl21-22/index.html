@@ -6,20 +6,20 @@
   <meta http-equiv="cache-control" content="no-cache">
   <meta http-equiv="expires" content="0">
   
-  <title>overthewire.bandit.lvl[20-21] | 0xFEE1DEAD</title>
+  <title>overthewire.bandit.lvl[21-22] | 0xFEE1DEAD</title>
   <meta name="author" content="Mustafa Algayar">
   
   <meta name="description" content="Level Goal
-there is a setuid executable in the homedirectory that does the following: it makes a connection to localhost on the port you specify as a commandline argument. it then reads a line of text from the connection and compares it to the password in the previous level (bandit20). if the password is correct, it will transmit the password for the next level (bandit21).
-overthewire.bandit.lvl[20-21]
+a program is running automatically at regualr intervals from cron, the time-based job scheduler. look in /etc/cron.d/ for the configuration and see what command is being executed
+overthewire.bandit.lvl[21-22]
 
 Solution
-this challenge is all about shell job control."> 
+first we ls(1) the directory that contain the system wide crontab files, usually they are located in /etc/cron.d/ and /etc/crontab/ directories, and can be edited only by the system administrator"> 
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="overthewire.bandit.lvl[20-21]"/>
+  <meta property="og:title" content="overthewire.bandit.lvl[21-22]"/>
   <meta property="og:site_name" content="0xFEE1DEAD"/>
 
   
@@ -95,7 +95,7 @@ this challenge is all about shell job control.">
 
 	
 		<div class="page-header">
-			<h1> overthewire.bandit.lvl[20-21]</h1>
+			<h1> overthewire.bandit.lvl[21-22]</h1>
 		</div>
 	
 
@@ -113,24 +113,30 @@ this challenge is all about shell job control.">
 	  		
 
 	  <h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
-<blockquote><p>there is a setuid executable in the homedirectory that does the following: it makes a connection to localhost on the port you specify as a commandline argument. it then reads a line of text from the connection and compares it to the password in the previous level (bandit20). if the password is correct, it will transmit the password for the next level (bandit21).</p>
-<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit21.html" target="_blank" rel="noopener">lvl[20-21]</a></cite></footer></blockquote>
+<blockquote><p>a program is running automatically at regualr intervals from cron, the time-based job scheduler. look in /etc/cron.d/ for the configuration and see what command is being executed</p>
+<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit22.html" target="_blank" rel="noopener">lvl[21-22]</a></cite></footer></blockquote>
 
 <h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
-<p>this challenge is all about <a href="https://en.wikipedia.org/wiki/Job_control_(Unix)" target="_blank" rel="noopener">shell job control</a>.</p>
+<p>first we ls(1) the directory that contain the system wide crontab files, usually they are located in /etc/cron.d/ and /etc/crontab/ directories, and can be edited only by the system administrator</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl21-22/01.png" alt="img01"></p>
 <a id="more"></a>
 
-<p>so first we will use <a href="https://linux.die.net/man/1/nc" target="_blank" rel="noopener">nc(1)</a> to create a server that listen port 40000 and connects to it with the setuid executable in the home directory.</p>
-<p><img src="/images/ctf/wargames/overthewire/bandit/lvl20-21/01.png" alt="img01"></p>
-<p>now we will put the nc(1) process in the foreground and supply the password for user bandit20.</p>
-<p><img src="/images/ctf/wargames/overthewire/bandit/lvl20-21/02.png" alt="img02"></p>
-<p>great, we got next level’s password!.</p>
+
+<p>let’s cat(1) the contents of the file cronjob_bandit22</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl21-22/02.png" alt="img02"></p>
+<p>the @reboot in the first line is a predefined macro that it means run the specified task at the system startup while, while the five asterisks in the second line means run the specified task every minute of every day of every week of every month of every year.</p>
+<p>let’s cat(1) the file /usr/bin/cronjob_bandit22.sh</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl21-22/03.png" alt="img03"></p>
+<p>well, it’s a bash script that cat(1) the password for user bandit22 to a file readable by other users.</p>
+<p>let’s cat(1) that file</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl21-22/04.png" alt="img04"></p>
+<p>the file contains next level’s password, so we are done!.</p>
 
 	  
 	</div>
 
 	
-	<span id="/2020/01/09/overthewire-bandit-lvl20-21/" class="leancloud-visitors view" data-flag-title="overthewire.bandit.lvl[20-21]">
+	<span id="/2020/01/09/overthewire-bandit-lvl21-22/" class="leancloud-visitors view" data-flag-title="overthewire.bandit.lvl[21-22]">
 		<em class="post-meta-item-text"> Page View </em> <i class="leancloud-visitors-count"></i>
 	</span>
 	
@@ -141,13 +147,12 @@ this challenge is all about shell job control.">
 
     
     
-    <a href="/2020/01/09/overthewire-bandit-lvl21-22/" type="button" class="btn btn-default"><i
-                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    <a type="button" class="btn btn-default disabled"><i class="fa fa-arrow-circle-o-left"></i>Prev</a>
     
 
     <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
     
-    <a href="/2020/01/09/overthewire-bandit-lvl19-20/" type="button" class="btn btn-default ">Next<i
+    <a href="/2020/01/09/overthewire-bandit-lvl20-21/" type="button" class="btn btn-default ">Next<i
                 class="fa fa-arrow-circle-o-right"></i></a>
     
 
