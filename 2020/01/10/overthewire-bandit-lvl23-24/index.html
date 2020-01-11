@@ -6,20 +6,23 @@
   <meta http-equiv="cache-control" content="no-cache">
   <meta http-equiv="expires" content="0">
   
-  <title>overthewire.bandit.lvl[13-14] | 0xFEE1DEAD</title>
+  <title>overthewire.bandit.lvl[23-24] | 0xFEE1DEAD</title>
   <meta name="author" content="Mustafa Algayar">
   
-  <meta name="description" content="Level Goal
-the password for the next level is stored in /etc/bandit_pass/bandit14 and can only be read by user bandit14. for this level, you don’t get the next password, but you get a private SSH key that can be used to log into the next level. Note: localhost is a hostname that refers to the machine you are working on.
-overthewire.bandit.lvl[13-14]
+  <meta name="description" content="Level goal
+a program is running automatically at regular intervals from cron, the time-based job scheduler. look in /etc/cron.d/ for the configuration and see what command is being executed.NOTE: this level requires you to create your own first shell-script. this is a very big step and you should be proud of yourself when you beat this level!.NOTE2: keep in mind that your shell script is removed once executed, so you may want to keep acopy around…
+overthewire.banditlvl[23-24]
+
 
 Solution
-after logging into the server as user bandit13 we find the private key for userbandit14 in a file named sshkey.private in the home directory for user bandit13."> 
+first we ls(1) the directory /etc/cron.d/.
+
+as we can see the file cronjob_bandit24 is readable by any user, let’s see it’s contents."> 
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="overthewire.bandit.lvl[13-14]"/>
+  <meta property="og:title" content="overthewire.bandit.lvl[23-24]"/>
   <meta property="og:site_name" content="0xFEE1DEAD"/>
 
   
@@ -95,7 +98,7 @@ after logging into the server as user bandit13 we find the private key for userb
 
 	
 		<div class="page-header">
-			<h1> overthewire.bandit.lvl[13-14]</h1>
+			<h1> overthewire.bandit.lvl[23-24]</h1>
 		</div>
 	
 
@@ -112,27 +115,31 @@ after logging into the server as user bandit13 we find the private key for userb
 	<div class="mypage">		
 	  		
 
-	  <h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
-<blockquote><p>the password for the next level is stored in /etc/bandit_pass/bandit14 and can only be read by user bandit14. for this level, you don’t get the next password, but you get a private SSH key that can be used to log into the next level. Note: localhost is a hostname that refers to the machine you are working on.</p>
-<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit14.html" target="_blank" rel="noopener">lvl[13-14]</a></cite></footer></blockquote>
+	  <h1 id="Level-goal"><a href="#Level-goal" class="headerlink" title="Level goal"></a>Level goal</h1><hr>
+<blockquote><p>a program is running automatically at regular intervals from cron, the time-based job scheduler. look in /etc/cron.d/ for the configuration and see what command is being executed.<br>NOTE: this level requires you to create your own first shell-script. this is a very big step and you should be proud of yourself when you beat this level!.<br>NOTE2: keep in mind that your shell script is removed once executed, so you may want to keep acopy around…</p>
+<footer><strong>overthewire.bandit</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit24.html" target="_blank" rel="noopener">lvl[23-24]</a></cite></footer></blockquote>
+
 
 <h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
-<p>after logging into the server as user bandit13 we find the private key for user<br>bandit14 in a file named sshkey.private in the home directory for user bandit13.<br><img src="/images/ctf/wargames/overthewire/bandit/lvl13-14/01.png" alt="img01"></p>
+<p>first we ls(1) the directory /etc/cron.d/.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl23-24/01.png" alt="img01"></p>
+<p>as we can see the file cronjob_bandit24 is readable by any user, let’s see it’s contents.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl23-24/02.png" alt="img02"></p>
 <a id="more"></a>
 
-<p>now we should save the contents of sshkey.private on our localhost, i named mine (bandit14.sshkey.private).</p>
-<p>the ssh command man pages states that the files that contain the private key, has to be readable by the owner but not accessible by others.</p>
-<blockquote><p>contains the private key for authentication. these files contain sensitive data and should be readable by the owner but not accessible by others (r/w/x). ssh will simply ignore a private key file if it’s accessible by others. it’s possible to specify a passphrase when generating the key which will be used to encrypt the sensitive part of this file with 3DES.</p>
-<footer><strong>ssh.</strong><cite><a href="https://man.openbsd.org/ssh.1#FILES" target="_blank" rel="noopener">manpage</a></cite></footer></blockquote>
-
-<p>creating the file with permissions (660) will do just fine, now we will add our private key to the authentication agent and set the lifetime of the private key to 20 seconds, so it can be removed automatically by the authentication agent<br><img src="/images/ctf/wargames/overthewire/bandit/lvl13-14/02.png" alt="img02"></p>
-<p>now we can login into the server as user bandit14, cat(1) /etc/bandit_pass/bandit14 to get password for next lvl and we are done.<br><img src="/images/ctf/wargames/overthewire/bandit/lvl13-14/03.png" alt="img03"></p>
+<p>what looks interesting here is the cronjob that executes the shell script /usr/bin/cronjob_bandit24.sh every minute. let’s cat(1) this file.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl23-24/03.png" alt="img03"></p>
+<p>so this shell script will try to execute every file in the /var/spool/bandit24/ directory then remove it, keep in mind that this shell script will run as user bandit24 so the <a href="http://man7.org/linux/man-pages/man1/whoami.1.html" target="_blank" rel="noopener">whoami</a> command will evaluate to the value bandit24.</p>
+<p>looking at permissions of the directory /var/spool/bandit24/, we find it’s writeable by any user so we can create a shell script, move it there and it will be executed.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl23-24/04.png" alt="img04"></p>
+<p>now we create our shell script that will cat(1) dump the password of next level to the file /var/spool/bandit24/bandit24.pass, move it to the target directory and sleep for 65 seconds, then dump the contents of the newly created file that contains the next level’s password and we are done!.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl23-24/05.png" alt="img05"><br><img src="/images/ctf/wargames/overthewire/bandit/lvl23-24/06.png" alt="img06"></p>
 
 	  
 	</div>
 
 	
-	<span id="/2020/01/07/overthewire-bandit-lvl13-14/" class="leancloud-visitors view" data-flag-title="overthewire.bandit.lvl[13-14]">
+	<span id="/2020/01/10/overthewire-bandit-lvl23-24/" class="leancloud-visitors view" data-flag-title="overthewire.bandit.lvl[23-24]">
 		<em class="post-meta-item-text"> Page View </em> <i class="leancloud-visitors-count"></i>
 	</span>
 	
@@ -143,13 +150,12 @@ after logging into the server as user bandit13 we find the private key for userb
 
     
     
-    <a href="/2020/01/07/overthewire-bandit-lvl14-15/" type="button" class="btn btn-default"><i
-                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    <a type="button" class="btn btn-default disabled"><i class="fa fa-arrow-circle-o-left"></i>Prev</a>
     
 
     <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
     
-    <a href="/2020/01/07/overthewire-bandit-lvl12-13/" type="button" class="btn btn-default ">Next<i
+    <a href="/2020/01/09/overthewire-bandit-lvl22-23/" type="button" class="btn btn-default ">Next<i
                 class="fa fa-arrow-circle-o-right"></i></a>
     
 
@@ -181,7 +187,7 @@ after logging into the server as user bandit13 we find the private key for userb
 	
 	<div class="meta-widget">
 	<i class="fa fa-clock-o"></i>
-	2020-01-07 
+	2020-01-10 
 	</div>
 	
 
