@@ -6,20 +6,22 @@
   <meta http-equiv="cache-control" content="no-cache">
   <meta http-equiv="expires" content="0">
   
-  <title>overthewire.bandit.lvl[24-25] | 0xFEE1DEAD</title>
+  <title>overthewire.bandit.lvl[25-26] | 0xFEE1DEAD</title>
   <meta name="author" content="Mustafa Algayar">
   
   <meta name="description" content="Level Goal
-A daemon is listening on port 30002 and will give you the password for bandit25 if given the password for bandit24 and a secret numeric 4-digit pincode. There is no way to retrieve the pincode except by going through all of the 10000 combinations, called brute-forcing.
-overthewire.bandit.lvl[24-25]
+logging in to bandit26 from bandit25 should be fairly easy… the shell for user bandit26 is not /bin/bash, but something else. find out what it is, how it works and how to break out of it
+overthewire.bandit.lvl[25-26]
 
 Solution
-for this level i wrote the following bash script that will try to bruteforce the daemon running on port 30002."> 
+first let’s login to server as user bandit25, we will find the private key for user bandit26 which we will add to our ssh agent so we can log into the server as user bandit26.
+
+if we try to login as user bandit26 we will be presented with and ascii-art banner, then the session will be terminated immediately."> 
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="overthewire.bandit.lvl[24-25]"/>
+  <meta property="og:title" content="overthewire.bandit.lvl[25-26]"/>
   <meta property="og:site_name" content="0xFEE1DEAD"/>
 
   
@@ -95,7 +97,7 @@ for this level i wrote the following bash script that will try to bruteforce the
 
 	
 		<div class="page-header">
-			<h1> overthewire.bandit.lvl[24-25]</h1>
+			<h1> overthewire.bandit.lvl[25-26]</h1>
 		</div>
 	
 
@@ -113,23 +115,43 @@ for this level i wrote the following bash script that will try to bruteforce the
 	  		
 
 	  <h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
-<blockquote><p>A daemon is listening on port 30002 and will give you the password for bandit25 if given the password for bandit24 and a secret numeric 4-digit pincode. There is no way to retrieve the pincode except by going through all of the 10000 combinations, called brute-forcing.</p>
-<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit25.html" target="_blank" rel="noopener">lvl[24-25]</a></cite></footer></blockquote>
+<blockquote><p>logging in to bandit26 from bandit25 should be fairly easy… the shell for user bandit26 is not /bin/bash, but something else. find out what it is, how it works and how to break out of it</p>
+<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit26.html" target="_blank" rel="noopener">lvl[25-26]</a></cite></footer></blockquote>
 
 <h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
-<p>for this level i wrote the following bash script that will try to bruteforce the daemon running on port 30002.</p>
-<p><img src="/images/ctf/wargames/overthewire/bandit/lvl24-25/01.png" alt="img01"></p>
+<p>first let’s login to server as user bandit25, we will find the private key for user bandit26 which we will add to our ssh agent so we can log into the server as user bandit26.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl25-26/01.png" alt="img01"></p>
+<p>if we try to login as user bandit26 we will be presented with and ascii-art banner, then the session will be terminated immediately.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl25-26/02.png" alt="img02"></p>
 <a id="more"></a>
 
-<p>it will create all 10000 4-digit pincode combinations, concatenate it with the password for user bandit24 and write the results to password.bruteforce file, supply those lines to the standard input of the daemon running on port 3000, redirect the standard output of the nc(1) command to the file brute.dump and then get the unique lines out of  the file brute.dump.</p>
-<p><img src="/images/ctf/wargames/overthewire/bandit/lvl24-25/02.png" alt="img02"></p>
-<p>great!, we got the password for the next level!.</p>
+<p>so let’s go back and login as user bandit25 again, this time we will try to find more about the default shell for user bandit26.</p>
+<p>we can find the deafult shell for user bandit26 from the <a href="https://linux.die.net/man/5/passwd" target="_blank" rel="noopener">/etc/passwd</a> file.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl25-26/03.png" alt="img03"></p>
+<p>so the default shell for user bandit26 is /usr/bin/showtext, let’s get more information about it.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl25-26/04.png" alt="img04"></p>
+<p>well, it’s a shell script that does nothing but open the file text.txt in home directory for user bandit26 using <a href="http://man7.org/linux/man-pages/man1/more.1.html" target="_blank" rel="noopener">more(1)</a> command and then exits.</p>
+<p>hmmm, the trick must be related to how the more(1) command handles files, the following is a description for the more(1) command from it’s man page.</p>
+<blockquote><p>more is a filter for paging through text one screenful at a time.</p>
+<footer><strong>more(1).</strong><cite><a href="http://man7.org/linux/man-pages/man1/more.1.html" target="_blank" rel="noopener">manpage</a></cite></footer></blockquote>
+
+<p>look at this word carefully [ screenful ].</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl25-26/05.jpg" alt="img05"></p>
+<p>so we can deduce that if the contents of the file can’t be dumped at once to the screen, the more(1) command will not exit, instead it will be interactive and we can view the rest of the file.</p>
+<p>now the thing is, if we look more carefully at the more(1) command man page, under the interactive commands section we will find out that we can execute another editor from within more(1).</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl25-26/06.png" alt="img06"></p>
+<p>now we will try to login to the server as user bandit26, but this time we will set the terminal size to be very small, i’ve set it tibe 51x2.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl25-26/07.png" alt="img07"></p>
+<p>the showtext script doesn’t reach the exit command and we are now in the interactive mode for more(1) command, now pressing Esc character then pressing v, we will be editing the file with vim editor.</p>
+<p>now we will try to get shell from within vim.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl25-26/08.png" alt="img08"><br><img src="/images/ctf/wargames/overthewire/bandit/lvl25-26/09.png" alt="img09"></p>
+<p>great we got shell!, this level is done now.</p>
 
 	  
 	</div>
 
 	
-	<span id="/2020/01/11/overthewire-bandit-lvl24-25/" class="leancloud-visitors view" data-flag-title="overthewire.bandit.lvl[24-25]">
+	<span id="/2020/01/11/overthewire-bandit-lvl25-26/" class="leancloud-visitors view" data-flag-title="overthewire.bandit.lvl[25-26]">
 		<em class="post-meta-item-text"> Page View </em> <i class="leancloud-visitors-count"></i>
 	</span>
 	
@@ -140,13 +162,12 @@ for this level i wrote the following bash script that will try to bruteforce the
 
     
     
-    <a href="/2020/01/11/overthewire-bandit-lvl25-26/" type="button" class="btn btn-default"><i
-                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    <a type="button" class="btn btn-default disabled"><i class="fa fa-arrow-circle-o-left"></i>Prev</a>
     
 
     <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
     
-    <a href="/2020/01/10/overthewire-bandit-lvl23-24/" type="button" class="btn btn-default ">Next<i
+    <a href="/2020/01/11/overthewire-bandit-lvl24-25/" type="button" class="btn btn-default ">Next<i
                 class="fa fa-arrow-circle-o-right"></i></a>
     
 
