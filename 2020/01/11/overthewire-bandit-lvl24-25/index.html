@@ -6,20 +6,20 @@
   <meta http-equiv="cache-control" content="no-cache">
   <meta http-equiv="expires" content="0">
   
-  <title>overthewire.bandit.lvl[13-14] | 0xFEE1DEAD</title>
+  <title>overthewire.bandit.lvl[24-25] | 0xFEE1DEAD</title>
   <meta name="author" content="Mustafa Algayar">
   
   <meta name="description" content="Level Goal
-the password for the next level is stored in /etc/bandit_pass/bandit14 and can only be read by user bandit14. for this level, you don’t get the next password, but you get a private SSH key that can be used to log into the next level. Note: localhost is a hostname that refers to the machine you are working on.
-overthewire.bandit.lvl[13-14]
+A daemon is listening on port 30002 and will give you the password for bandit25 if given the password for bandit24 and a secret numeric 4-digit pincode. There is no way to retrieve the pincode except by going through all of the 10000 combinations, called brute-forcing.
+overthewire.bandit.lvl[24-25]
 
 Solution
-after logging into the server as user bandit13 we find the private key for userbandit14 in a file named sshkey.private in the home directory for user bandit13."> 
+for this level i wrote the following bash script that will try to bruteforce the daemon running on port 30002."> 
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="overthewire.bandit.lvl[13-14]"/>
+  <meta property="og:title" content="overthewire.bandit.lvl[24-25]"/>
   <meta property="og:site_name" content="0xFEE1DEAD"/>
 
   
@@ -95,7 +95,7 @@ after logging into the server as user bandit13 we find the private key for userb
 
 	
 		<div class="page-header">
-			<h1> overthewire.bandit.lvl[13-14]</h1>
+			<h1> overthewire.bandit.lvl[24-25]</h1>
 		</div>
 	
 
@@ -113,26 +113,23 @@ after logging into the server as user bandit13 we find the private key for userb
 	  		
 
 	  <h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
-<blockquote><p>the password for the next level is stored in /etc/bandit_pass/bandit14 and can only be read by user bandit14. for this level, you don’t get the next password, but you get a private SSH key that can be used to log into the next level. Note: localhost is a hostname that refers to the machine you are working on.</p>
-<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit14.html" target="_blank" rel="noopener">lvl[13-14]</a></cite></footer></blockquote>
+<blockquote><p>A daemon is listening on port 30002 and will give you the password for bandit25 if given the password for bandit24 and a secret numeric 4-digit pincode. There is no way to retrieve the pincode except by going through all of the 10000 combinations, called brute-forcing.</p>
+<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit25.html" target="_blank" rel="noopener">lvl[24-25]</a></cite></footer></blockquote>
 
 <h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
-<p>after logging into the server as user bandit13 we find the private key for user<br>bandit14 in a file named sshkey.private in the home directory for user bandit13.<br><img src="/images/ctf/wargames/overthewire/bandit/lvl13-14/01.png" alt="img01"></p>
+<p>for this level i wrote the following bash script that will try to bruteforce the daemon running on port 30002.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl24-25/01.png" alt="img01"></p>
 <a id="more"></a>
 
-<p>now we should save the contents of sshkey.private on our localhost, i named mine (bandit14.sshkey.private).</p>
-<p>the ssh command man pages states that the files that contain the private key, has to be readable by the owner but not accessible by others.</p>
-<blockquote><p>contains the private key for authentication. these files contain sensitive data and should be readable by the owner but not accessible by others (r/w/x). ssh will simply ignore a private key file if it’s accessible by others. it’s possible to specify a passphrase when generating the key which will be used to encrypt the sensitive part of this file with 3DES.</p>
-<footer><strong>ssh.</strong><cite><a href="https://man.openbsd.org/ssh.1#FILES" target="_blank" rel="noopener">manpage</a></cite></footer></blockquote>
-
-<p>creating the file with permissions (660) will do just fine, now we will add our private key to the authentication agent and set the lifetime of the private key to 20 seconds, so it can be removed automatically by the authentication agent<br><img src="/images/ctf/wargames/overthewire/bandit/lvl13-14/02.png" alt="img02"></p>
-<p>now we can login into the server as user bandit14, cat(1) /etc/bandit_pass/bandit14 to get password for next lvl and we are done.<br><img src="/images/ctf/wargames/overthewire/bandit/lvl13-14/03.png" alt="img03"></p>
+<p>it will create all 10000 4-digit pincode combinations, concatenate it with the password for user bandit24 and write the results to password.bruteforce file, supply those lines to the standard input of the daemon running on port 3000, redirect the standard output of the nc(1) command to the file brute.dump and then get the unique lines out of  the file brute.dump.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl24-25/02.png" alt="img02"></p>
+<p>great!, we got the password for the next level!.</p>
 
 	  
 	</div>
 
 	
-	<span id="/2020/01/07/overthewire-bandit-lvl13-14/" class="leancloud-visitors view" data-flag-title="overthewire.bandit.lvl[13-14]">
+	<span id="/2020/01/11/overthewire-bandit-lvl24-25/" class="leancloud-visitors view" data-flag-title="overthewire.bandit.lvl[24-25]">
 		<em class="post-meta-item-text"> Page View </em> <i class="leancloud-visitors-count"></i>
 	</span>
 	
@@ -143,13 +140,12 @@ after logging into the server as user bandit13 we find the private key for userb
 
     
     
-    <a href="/2020/01/07/overthewire-bandit-lvl14-15/" type="button" class="btn btn-default"><i
-                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    <a type="button" class="btn btn-default disabled"><i class="fa fa-arrow-circle-o-left"></i>Prev</a>
     
 
     <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
     
-    <a href="/2020/01/07/overthewire-bandit-lvl12-13/" type="button" class="btn btn-default ">Next<i
+    <a href="/2020/01/10/overthewire-bandit-lvl23-24/" type="button" class="btn btn-default ">Next<i
                 class="fa fa-arrow-circle-o-right"></i></a>
     
 
@@ -181,7 +177,7 @@ after logging into the server as user bandit13 we find the private key for userb
 	
 	<div class="meta-widget">
 	<i class="fa fa-clock-o"></i>
-	2020-01-07 
+	2020-01-11 
 	</div>
 	
 
