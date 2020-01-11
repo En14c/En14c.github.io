@@ -6,23 +6,20 @@
   <meta http-equiv="cache-control" content="no-cache">
   <meta http-equiv="expires" content="0">
   
-  <title>overthewire.bandit.lvl[23-24] | 0xFEE1DEAD</title>
+  <title>overthewire.bandit.lvl[26-27] | 0xFEE1DEAD</title>
   <meta name="author" content="Mustafa Algayar">
   
-  <meta name="description" content="Level goal
-a program is running automatically at regular intervals from cron, the time-based job scheduler. look in /etc/cron.d/ for the configuration and see what command is being executed.NOTE: this level requires you to create your own first shell-script. this is a very big step and you should be proud of yourself when you beat this level!.NOTE2: keep in mind that your shell script is removed once executed, so you may want to keep acopy around…
-overthewire.banditlvl[23-24]
-
+  <meta name="description" content="Level Goal
+Good job getting a shell! Now hurry and grab the password for bandit27!
+overthewire.bandit.lvl[26-27]
 
 Solution
-first we ls(1) the directory /etc/cron.d/.
-
-as we can see the file cronjob_bandit24 is readable by any user, let’s see it’s contents."> 
+in the writeup for the previous level, we did get a shell as user bandit26, in the home directory for user bandit26 we found a file named bandit27-do, let’s get some information about this file."> 
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="overthewire.bandit.lvl[23-24]"/>
+  <meta property="og:title" content="overthewire.bandit.lvl[26-27]"/>
   <meta property="og:site_name" content="0xFEE1DEAD"/>
 
   
@@ -98,7 +95,7 @@ as we can see the file cronjob_bandit24 is readable by any user, let’s see it�
 
 	
 		<div class="page-header">
-			<h1> overthewire.bandit.lvl[23-24]</h1>
+			<h1> overthewire.bandit.lvl[26-27]</h1>
 		</div>
 	
 
@@ -115,31 +112,25 @@ as we can see the file cronjob_bandit24 is readable by any user, let’s see it�
 	<div class="mypage">		
 	  		
 
-	  <h1 id="Level-goal"><a href="#Level-goal" class="headerlink" title="Level goal"></a>Level goal</h1><hr>
-<blockquote><p>a program is running automatically at regular intervals from cron, the time-based job scheduler. look in /etc/cron.d/ for the configuration and see what command is being executed.<br>NOTE: this level requires you to create your own first shell-script. this is a very big step and you should be proud of yourself when you beat this level!.<br>NOTE2: keep in mind that your shell script is removed once executed, so you may want to keep acopy around…</p>
-<footer><strong>overthewire.bandit</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit24.html" target="_blank" rel="noopener">lvl[23-24]</a></cite></footer></blockquote>
-
+	  <h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
+<blockquote><p>Good job getting a shell! Now hurry and grab the password for bandit27!</p>
+<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit27.html" target="_blank" rel="noopener">lvl[26-27]</a></cite></footer></blockquote>
 
 <h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
-<p>first we ls(1) the directory /etc/cron.d/.</p>
-<p><img src="/images/ctf/wargames/overthewire/bandit/lvl23-24/01.png" alt="img01"></p>
-<p>as we can see the file cronjob_bandit24 is readable by any user, let’s see it’s contents.</p>
-<p><img src="/images/ctf/wargames/overthewire/bandit/lvl23-24/02.png" alt="img02"></p>
+<p>in the <a href="/2020/01/11/overthewire-bandit-lvl25-26/" title="writeup">writeup</a> for the previous level, we did get a shell as user bandit26, in the home directory for user bandit26 we found a file named bandit27-do, let’s get some information about this file.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl26-27/01.png" alt="img01"></p>
 <a id="more"></a>
 
-<p>what looks interesting here is the cronjob that executes the shell script /usr/bin/cronjob_bandit24.sh every minute. let’s cat(1) this file.</p>
-<p><img src="/images/ctf/wargames/overthewire/bandit/lvl23-24/03.png" alt="img03"></p>
-<p>so this shell script will try to execute every file in the /var/spool/bandit24/ directory then remove it, keep in mind that this shell script will run as user bandit24 so the <a href="http://man7.org/linux/man-pages/man1/whoami.1.html" target="_blank" rel="noopener">whoami</a> command will evaluate to the value bandit24.</p>
-<p>looking at permissions of the directory /var/spool/bandit24/, we find it’s writeable by any user so we can create a shell script, move it there and it will be executed.</p>
-<p><img src="/images/ctf/wargames/overthewire/bandit/lvl23-24/04.png" alt="img04"></p>
-<p>now we create our shell script that will cat(1) dump the password of next level to the file /var/spool/bandit24/bandit24.pass, move it to the target directory and sleep for 65 seconds, then dump the contents of the newly created file that contains the next level’s password and we are done!.</p>
-<p><img src="/images/ctf/wargames/overthewire/bandit/lvl23-24/05.png" alt="img05"><br><img src="/images/ctf/wargames/overthewire/bandit/lvl23-24/06.png" alt="img06"></p>
+<p>well, it’s a setuid ELF32 executable that is owned by user bandit27. let’s run it and find out what it does.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl26-27/02.png" alt="img02"></p>
+<p>it will execute another command that is passed to it on the command line. so we will supply a cat(1) command that get the next level’s password and we are done.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl26-27/03.png" alt="img03"></p>
 
 	  
 	</div>
 
 	
-	<span id="/2020/01/10/overthewire-bandit-lvl23-24/" class="leancloud-visitors view" data-flag-title="overthewire.bandit.lvl[23-24]">
+	<span id="/2020/01/11/overthewire-bandit-lvl26-27/" class="leancloud-visitors view" data-flag-title="overthewire.bandit.lvl[26-27]">
 		<em class="post-meta-item-text"> Page View </em> <i class="leancloud-visitors-count"></i>
 	</span>
 	
@@ -150,13 +141,12 @@ as we can see the file cronjob_bandit24 is readable by any user, let’s see it�
 
     
     
-    <a href="/2020/01/11/overthewire-bandit-lvl24-25/" type="button" class="btn btn-default"><i
-                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    <a type="button" class="btn btn-default disabled"><i class="fa fa-arrow-circle-o-left"></i>Prev</a>
     
 
     <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
     
-    <a href="/2020/01/09/overthewire-bandit-lvl22-23/" type="button" class="btn btn-default ">Next<i
+    <a href="/2020/01/11/overthewire-bandit-lvl25-26/" type="button" class="btn btn-default ">Next<i
                 class="fa fa-arrow-circle-o-right"></i></a>
     
 
@@ -188,7 +178,7 @@ as we can see the file cronjob_bandit24 is readable by any user, let’s see it�
 	
 	<div class="meta-widget">
 	<i class="fa fa-clock-o"></i>
-	2020-01-10 
+	2020-01-11 
 	</div>
 	
 
