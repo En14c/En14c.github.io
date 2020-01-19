@@ -6,20 +6,16 @@
   <meta http-equiv="cache-control" content="no-cache">
   <meta http-equiv="expires" content="0">
   
-  <title>overthewire.bandit.lvl[16-17] | neuromancer</title>
+  <title>overthewire.bandit.lvl[30-31] | neuromancer</title>
   <meta name="author" content="Mustafa Algayar">
   
   <meta name="description" content="Level Goal
-the credentials for the next level can be retrieved by submitting the password of the current level to a port on localhost in the range 31000 to 32000. first find out which of these ports have a server listening on them. then find out which of those speak SSL and which don’t. there is only 1 server that will give the next credentials, the others will simply send back to you whatever you send to it.
-overthewire.bandit.[lvl16-17]
-
-Solution
-we will use namp to scan the range of ports and use it’s version detection functionality get more info about what is actually running/listening on those ports."> 
+There is a git repository at ssh://bandit30-git@localhost/home/bandit30-git/repo. The password for the user bandit30-git is the same as for">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="overthewire.bandit.lvl[16-17]"/>
+  <meta property="og:title" content="overthewire.bandit.lvl[30-31]"/>
   <meta property="og:site_name" content="neuromancer"/>
 
   
@@ -95,7 +91,7 @@ we will use namp to scan the range of ports and use it’s version detection fun
 
 	
 		<div class="page-header">
-			<h1> overthewire.bandit.lvl[16-17]</h1>
+			<h1> overthewire.bandit.lvl[30-31]</h1>
 		</div>
 	
 
@@ -113,22 +109,19 @@ we will use namp to scan the range of ports and use it’s version detection fun
 	  		
 
 	  <h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
-<blockquote><p>the credentials for the next level can be retrieved by submitting the password of the current level to a port on localhost in the range 31000 to 32000. first find out which of these ports have a server listening on them. then find out which of those speak SSL and which don’t. there is only 1 server that will give the next credentials, the others will simply send back to you whatever you send to it.</p>
-<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit17.html" target="_blank" rel="noopener">[lvl16-17]</a></cite></footer></blockquote>
+<blockquote><p>There is a git repository at ssh://bandit30-git@localhost/home/bandit30-git/repo. The password for the user bandit30-git is the same as for the user bandit30.</p>
+<p>Clone the repository and find the password for the next level.</p>
+<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit31.html" target="_blank" rel="noopener">lvl[30-31]</a></cite></footer></blockquote>
 
 <h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
-<p>we will use <a href="https://nmap.org/" target="_blank" rel="noopener">namp</a> to scan the range of ports and use it’s version detection functionality get more info about what is actually running/listening on those ports.<br><img src="/images/ctf/wargames/overthewire/bandit/lvl16-17/01.png" alt="img01"></p>
-<a id="more"></a>
-
-<p>great!, now we know that the target service is running on port 31790. we will try connecting and providing current level’s password to it using openssl<br><img src="/images/ctf/wargames/overthewire/bandit/lvl16-17/02.png" alt="img02"></p>
-<p>the service rewarded us with user bandit17’s private key. now we should add this private key to our ssh agent to be able to login as user bandit17. i’ve named the private key file (bandit17.sshkey.private)<br><img src="/images/ctf/wargames/overthewire/bandit/lvl16-17/03.png" alt="img03"></p>
-<p>and we are done, we should now be able to login to the remote server as user bandit17.</p>
+<p>cloning the repo and listing the files in the working directory, we find a file named README.md which is an ASCII text file.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl30-31/01.png" alt="img01"></p>
 
 	  
 	</div>
 
 	
-	<span id="/2020/01/07/overthewire-bandit-lvl16-17/" class="leancloud-visitors view" data-flag-title="overthewire.bandit.lvl[16-17]">
+	<span id="/2020/01/16/overthewire-bandit-lvl30-31/" class="leancloud-visitors view" data-flag-title="overthewire.bandit.lvl[30-31]">
 		<em class="post-meta-item-text"> Page View </em> <i class="leancloud-visitors-count"></i>
 	</span>
 	
@@ -139,13 +132,12 @@ we will use namp to scan the range of ports and use it’s version detection fun
 
     
     
-    <a href="/2020/01/09/overthewire-bandit-lvl17-18/" type="button" class="btn btn-default"><i
-                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    <a type="button" class="btn btn-default disabled"><i class="fa fa-arrow-circle-o-left"></i>Prev</a>
     
 
     <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
     
-    <a href="/2020/01/07/overthewire-bandit-lvl15-16/" type="button" class="btn btn-default ">Next<i
+    <a href="/2020/01/13/overthewire-bandit-lvl29-30/" type="button" class="btn btn-default ">Next<i
                 class="fa fa-arrow-circle-o-right"></i></a>
     
 
@@ -177,7 +169,7 @@ we will use namp to scan the range of ports and use it’s version detection fun
 	
 	<div class="meta-widget">
 	<i class="fa fa-clock-o"></i>
-	2020-01-07 
+	2020-01-16 
 	</div>
 	
 
