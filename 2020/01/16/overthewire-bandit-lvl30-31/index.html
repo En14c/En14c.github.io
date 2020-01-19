@@ -10,7 +10,18 @@
   <meta name="author" content="Mustafa Algayar">
   
   <meta name="description" content="Level Goal
-There is a git repository at ssh://bandit30-git@localhost/home/bandit30-git/repo. The password for the user bandit30-git is the same as for">
+There is a git repository at ssh://bandit30-git@localhost/home/bandit30-git/repo. The password for the user bandit30-git is the same as for the user bandit30.
+Clone the repository and find the password for the next level.
+overthewire.bandit.lvl[30-31]
+
+Solution
+cloning the repo and listing the files in the working directory, i found only one file named README.md which is an ASCII text file.
+
+and there is only one branch in the repo named master.
+
+tried listing the commit history, but found only one commit that contains a snapshot for the file named README.md in which a dummy message has been written to this file.
+
+so at the end, i tried looking around in the .git directory hoping to find anything of interest."> 
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -114,8 +125,37 @@ There is a git repository at ssh://bandit30-git@localhost/home/bandit30-git/repo
 <footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit31.html" target="_blank" rel="noopener">lvl[30-31]</a></cite></footer></blockquote>
 
 <h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
-<p>cloning the repo and listing the files in the working directory, we find a file named README.md which is an ASCII text file.</p>
+<p>cloning the repo and listing the files in the working directory, i found only one file named README.md which is an ASCII text file.</p>
 <p><img src="/images/ctf/wargames/overthewire/bandit/lvl30-31/01.png" alt="img01"></p>
+<p>and there is only one branch in the repo named master.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl30-31/02.png" alt="img02"></p>
+<p>tried listing the commit history, but found only one commit that contains a snapshot for the file named README.md in which a dummy message has been written to this file.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl30-31/03.png" alt="img03"></p>
+<p>so at the end, i tried looking around in the <a href="https://stackoverflow.com/questions/29217859/what-is-the-git-folder" target="_blank" rel="noopener">.git directory</a> hoping to find anything of interest.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl30-31/04.png" alt="img04"></p>
+<a id="more"></a>
+
+<p>i started with the file named packed-refs</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl30-31/05.png" alt="img05"></p>
+<p>lurking around the <a href="https://git-scm.com/doc" target="_blank" rel="noopener">git documentation</a> i learned the following.</p>
+<p>git stores the tips of tags and branches as one file per branch or tag in the heads and tags subdirectories that exist in the .git/refs directory, now the case is that many branch tips tend to be updated regulary whil most branch tips and tags are never updated, and if a repository has too many branches that are not updated, there will be a wasted disk storage. now comes the <a href="https://git-scm.com/docs/git-pack-refs" target="_blank" rel="noopener">git pack-refs</a> to the rescue, this command basically stores all refs in a single file to save disk space and helps also when cloning the repoistory.</p>
+<p>i cat(1)ed this file and found a tag named secret. </p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl30-31/06.png" alt="img06"></p>
+<p>then i issued a <a href="https://git-scm.com/docs/git-cat-file" target="_blank" rel="noopener">git cat-file</a> command to get the type of git object that this tag points to.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl30-31/07.png" alt="img07"></p>
+<p>it points to a <a href="https://stackoverflow.com/questions/48959416/why-does-git-store-file-contents-as-a-blob" target="_blank" rel="noopener">git blob</a>. so i used git cat-file to read the contents of this blob.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl30-31/08.png" alt="img08"></p>
+<p>great, we got the next level’s password!.</p>
+<p>this level is done now but there just one thing i want to point out. the tag named secret was pointing to a git blob which correspondes to a file but there was no files in the repository other than README.md, right?</p>
+<p>i scratched my head on this and decided to tinker more and understand what is happening here.</p>
+<p>when i listed the .git/objects directory i found no objects but a directory called pack, i looked inside it and found a file with .pack extension.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl30-31/09.png" alt="img09"></p>
+<p>it turns out that git uses an access efficient archival format as an efficient way to transfer a set of objects between two repositories or hosts.</p>
+<p>i created a new directory, moved this the file with the .pack extension and then extracted the objects stored within it to the cloned repo.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl30-31/10.png" alt="img10"></p>
+<p>now when i listed the .git/objects i found the objects.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl30-31/11.png" alt="img11"></p>
+<p>the blob object pointed to by the tag named secret, may be was deleted from the repository and the commit for deleting was removed, but git doesn’t delete the actually and i was able to recover it.</p>
 
 	  
 	</div>
