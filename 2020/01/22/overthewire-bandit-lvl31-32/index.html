@@ -1,0 +1,266 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>overthewire.bandit.lvl[31-32] | neuromancer</title>
+  <meta name="author" content="Mustafa Algayar">
+  
+  <meta name="description" content="Level Goal
+There is a git repository at ssh://bandit31-git@localhost/home/bandit31-git/repo. The password for the user bandit31-git is the same as for the user bandit31.
+Clone the repository and find the password for the next level.
+overthewire.bandit.lvl[31-32]
+
+Solution
+as with the previous overthewire’s bandit git related challenges, i start by cat(1)ing the README.md file.
+
+we can see from the output that we are required to add a new file with a specific name and content, the remote server seems to have a pre-receive hook to validate the file and prevent adding the commit to the remote repository if the conditions are not met."> 
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="overthewire.bandit.lvl[31-32]"/>
+  <meta property="og:site_name" content="neuromancer"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/atom.xml" title="neuromancer" type="application/atom+xml">
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/">neuromancer</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/archives" title="All the articles.">
+			  <i class="fa fa-archive"></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/tags" title="All the tags.">
+			  <i class="fa fa-tags"></i>Tags
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/about" title="About me.">
+			  <i class="fa fa-user"></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> overthewire.bandit.lvl[31-32]</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
+<blockquote><p>There is a git repository at ssh://bandit31-git@localhost/home/bandit31-git/repo. The password for the user bandit31-git is the same as for the user bandit31.</p>
+<p>Clone the repository and find the password for the next level.</p>
+<footer><strong>overthewire.bandit.</strong><cite><a href="https://overthewire.org/wargames/bandit/bandit32.html" target="_blank" rel="noopener">lvl[31-32]</a></cite></footer></blockquote>
+
+<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
+<p>as with the previous overthewire’s bandit git related challenges, i start by cat(1)ing the README.md file.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl31-32/01.png" alt="img01"></p>
+<p>we can see from the output that we are required to add a new file with a specific name and content, the remote server seems to have a pre-receive hook to validate the file and prevent adding the commit to the remote repository if the conditions are not met.</p>
+<a id="more"></a>
+
+<p>when i created the file key.txt with thre required content and then tried to add it to the staging area, i got a warning message that all files with the .txt extension are ignored by a role in the .gitignore file.</p>
+<p>the nice thing about git is it’s helpful messages, here we can see that we can forcibly add the file to the staging area without editing the .gitignore file.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl31-32/02.png" alt="img02"></p>
+<p>now adding the file to the staging area, commiting and then pushing to the master branch on the remote server we will be rewarded with next level’s password as a result and we are done!.</p>
+<p><img src="/images/ctf/wargames/overthewire/bandit/lvl31-32/03.png" alt="img03"></p>
+
+	  
+	</div>
+
+	
+	<span id="/2020/01/22/overthewire-bandit-lvl31-32/" class="leancloud-visitors view" data-flag-title="overthewire.bandit.lvl[31-32]">
+		<em class="post-meta-item-text"> Page View </em> <i class="leancloud-visitors-count"></i>
+	</span>
+	
+	<div>
+  	<center>
+
+	<div class="pagination">
+
+    
+    
+    <a href="/2020/01/25/overthewire-bandit-lvl32-33/" type="button" class="btn btn-default"><i
+                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    
+
+    <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/2020/01/16/overthewire-bandit-lvl30-31/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	<!--
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+</section>
+
+-->
+	
+	</div> <!-- col-md-9/col-md-12 -->
+
+
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2020-01-22 
+	</div>
+	
+
+	<!-- categories -->
+    
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/wargames/">wargames<span>21</span></a></li> <li><a href="/tags/ctf/">ctf<span>21</span></a></li> <li><a href="/tags/linux/">linux<span>21</span></a></li> <li><a href="/tags/overthewire/">overthewire<span>21</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+		
+
+	</div>
+	
+		
+
+</div><!-- row -->
+
+<!--
+ -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2020 Mustafa Algayar's Blog
+  
+  powered by <a href="http://hexo.io/" target="_blank">Hexo</a>.
+  theme <a href="https://github.com/Ares-X/hexo-theme-freemind.bithack" target="_blank">
+      freemind.bithack</a>
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+</body>
+   </html>
