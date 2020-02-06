@@ -1,0 +1,286 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>overthewire.vortex.lvl[1-2] | neuromancer</title>
+  <meta name="author" content="Mustafa Algayar">
+  
+  <meta name="description" content="Level Goal
+We are looking for a specific value in ptr. You may need to consider how bash handles EOF..
+overthewire.vortex.lvl1-2
+
+Solution
+the macro function e() will reward us with a shell if we managed to overwrite the highest byte of the address that the pointer (ptr) points, with the value (0xca)
+
+after disassembling the binary, i can draw the layout of the local variables in the stack.
+(high stack addresses)^ ++++++++++++++++++++++++++++ --&amp;gt; buf_end|| &amp;#x2F;* 256 bytes *&amp;#x2F;| ++++++++++++++++++++++++++++ --&amp;gt; buf_middle (ptr is initialized to point to this address)|| &amp;#x2F;* 256 bytes *&amp;#x2F;|| ++++++++++++++++++++++++++++ --&amp;gt; buf_start|| &amp;#x2F;* 4 bytes *&amp;#x2F;|| ++++++++++++++++++++++++++++ --&amp;gt; x (start address of the local variable x)| &amp;#x2F;* ptr_byte3 *&amp;#x2F;| &amp;#x2F;* ptr_byte2 *&amp;#x2F;| &amp;#x2F;* ptr_byte1 *&amp;#x2F;| &amp;#x2F;* ptr_byte0 *&amp;#x2F;| ++++++++++++++++++++++++++++ --&amp;gt; ptr (start address of the pointer ptr)(low stack addresses)
+
+the program takes one character at a time through the standard input and checks that character against specific values."> 
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="overthewire.vortex.lvl[1-2]"/>
+  <meta property="og:site_name" content="neuromancer"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/atom.xml" title="neuromancer" type="application/atom+xml">
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/">neuromancer</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/archives" title="All the articles.">
+			  <i class="fa fa-archive"></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/tags" title="All the tags.">
+			  <i class="fa fa-tags"></i>Tags
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/about" title="About me.">
+			  <i class="fa fa-user"></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> overthewire.vortex.lvl[1-2]</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
+<blockquote><p>We are looking for a specific value in ptr. You may need to consider how bash handles EOF..</p>
+<footer><strong>overthewire.vortex.</strong><cite><a href="https://overthewire.org/wargames/vortex/vortex1.html" target="_blank" rel="noopener">lvl1-2</a></cite></footer></blockquote>
+
+<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
+<p>the macro function e() will reward us with a shell if we managed to overwrite the highest byte of the address that the pointer (ptr) points, with the value (0xca)</p>
+<p><img src="/images/ctf/wargames/overthewire/vortex/lvl1-2/01.png" alt="img01"></p>
+<p>after disassembling the binary, i can draw the layout of the local variables in the stack.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(high stack addresses)</span><br><span class="line">^ ++++++++++++++++++++++++++++ --&gt; buf_end</span><br><span class="line">|</span><br><span class="line">| &#x2F;* 256 bytes *&#x2F;</span><br><span class="line">| ++++++++++++++++++++++++++++ --&gt; buf_middle (ptr is initialized to point to this address)</span><br><span class="line">|</span><br><span class="line">| &#x2F;* 256 bytes *&#x2F;</span><br><span class="line">|</span><br><span class="line">| ++++++++++++++++++++++++++++ --&gt; buf_start</span><br><span class="line">|</span><br><span class="line">| &#x2F;* 4 bytes *&#x2F;</span><br><span class="line">|</span><br><span class="line">| ++++++++++++++++++++++++++++ --&gt; x (start address of the local variable x)</span><br><span class="line">| &#x2F;* ptr_byte3 *&#x2F;</span><br><span class="line">| &#x2F;* ptr_byte2 *&#x2F;</span><br><span class="line">| &#x2F;* ptr_byte1 *&#x2F;</span><br><span class="line">| &#x2F;* ptr_byte0 *&#x2F;</span><br><span class="line">| ++++++++++++++++++++++++++++ --&gt; ptr (start address of the pointer ptr)</span><br><span class="line">(low stack addresses)</span><br></pre></td></tr></table></figure>
+
+<p>the program takes one character at a time through the standard input and checks that character against specific values.</p>
+<a id="more"></a>
+
+<p>we have 3 cases, if the character was a</p>
+<ol>
+<li><p>new line character</p>
+<p>it will just print the contents of the buffer (buf).</p>
+</li>
+<li><p>backslash character</p>
+<p>it will decrease (by one) the address pointed to by the pointer (ptr).</p>
+</li>
+<li><p>any other character (except EOF)</p>
+<p>it will first execute the macro function e(), if the pointer (ptr) does not point to an address beyond the end of the buffer (buf), then it will overwrite the byte contained in the address it points to with the inserted character then increase (by one) the address it points to.</p>
+</li>
+</ol>
+<p>now to exploit this binary, we will first provide 261 backslash characters that will make the pointer (ptr) point to the address that contains the (ptr_byte3), here we used case 2 to make the pointer (ptr) point to part of it’s 4 bytes memory slot, specifically the byte at the highest address (the pointer is pointing to a subset of it’s memory).</p>
+<p>then we will provide the (0xca) character, here we are executing the case 3, which will result in (ptr_byte3) being overwritten with the character (0xca).</p>
+<p>now we provide any dummy character that will trigger the case number 3, but this time the check condition for the macro function e() will evaluate to true, and we will be rewarded with a shell!.</p>
+<p>here is the one-line bash script i wrote for solving this level.</p>
+<figure class="highlight bash"><figcaption><span>expl0it.sh</span><a href="https://github.com/En14c/rand0m.scr1pts/blob/master/ctf/wargames/overthewire/vortex/lvl1-2/expl0it.sh" target="_blank" rel="noopener">view on github</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(python -c <span class="string">'print "\x5c" * 261 + "\xca\x41"'</span>; cat -) | /vortex/vortex1  </span><br></pre></td></tr></table></figure>
+
+<p>execute it.</p>
+<p><img src="/images/ctf/wargames/overthewire/vortex/lvl1-2/02.png" alt="img02"></p>
+<p>great!, we got user vortex2’s password and we are done!.</p>
+
+	  
+	</div>
+
+	
+	<span id="/2020/02/02/overthewire-vortex-lvl1-2/" class="leancloud-visitors view" data-flag-title="overthewire.vortex.lvl[1-2]">
+		<em class="post-meta-item-text"> Page View </em> <i class="leancloud-visitors-count"></i>
+	</span>
+	
+	<div>
+  	<center>
+
+	<div class="pagination">
+
+    
+    
+    <a href="/2020/02/02/overthewire-vortex-lvl2-3/" type="button" class="btn btn-default"><i
+                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    
+
+    <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/2020/02/02/overthewire-vortex-lvl0-1/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	<!--
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+</section>
+
+-->
+	
+	</div> <!-- col-md-9/col-md-12 -->
+
+
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2020-02-02 
+	</div>
+	
+
+	<!-- categories -->
+    
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/wargames/">wargames<span>25</span></a></li> <li><a href="/tags/ctf/">ctf<span>25</span></a></li> <li><a href="/tags/overthewire/">overthewire<span>25</span></a></li> <li><a href="/tags/vortex/">vortex<span>4</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+		
+
+	</div>
+	
+		
+
+</div><!-- row -->
+
+<!--
+ -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2020 Mustafa Algayar's Blog
+  
+  powered by <a href="http://hexo.io/" target="_blank">Hexo</a>.
+  theme <a href="https://github.com/Ares-X/hexo-theme-freemind.bithack" target="_blank">
+      freemind.bithack</a>
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+</body>
+   </html>

