@@ -10,7 +10,17 @@
   <meta name="author" content="Mustafa Algayar">
   
   <meta name="description" content="Level Goal
-This is the common format string bug, exploit it with care though as a check is made with argc. What is the layout of a process’s memory? H">
+This is the common format string bug, exploit it with care though as a check is made with argc. What is the layout of a process’s memory? How are programs executed?.
+overthewire.vortex.lvl4-5
+
+Solution
+in this level we exploit a format string vulnerability to gain access to next level’s password, the vulnerability resides in passing a user supplied/controlled input (in this case a program argument) to the printf() function.
+but as we can see the program exits immediately if at least one program argument was supplied, so how can we overcome this obstacle and leverage the vulnerability to dump the vortex5 user’s password ?!.
+the way to overcome this, is to know how the kernel setups the stack layout for the process when it’s first created (there is a lot of blogs/books/papers that explains this in detail so i will not cover it here instead i will just give the initial stack layout up until the moment of main()’s invocation from the startup code).
+The Stack Layoutstack.layout1234567891011121314151617181920+++++local variables of mainsaved registers of mainreturn address of mainargcargvenvp+++++stack from startup codeargcargv pointersNULL that ends argv[]environment pointersNULL that ends envp[]ELF Auxiliary Table+++++argv stringsenvironment stringsprogram nameNULL
+
+
+the thing we need to know that if a program was created without arguments vector then the first entry in the argv pointers vector will have NULL, now the trick is that we can overlap the evnironment pointers and the argv pointers vectors !."> 
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -120,6 +130,8 @@ This is the common format string bug, exploit it with care though as a check is 
 
 
 <p>the thing we need to know that if a program was created without arguments vector then the first entry in the argv pointers vector will have NULL, now the trick is that we can overlap the evnironment pointers and the argv pointers vectors !.</p>
+<a id="more"></a>
+
 <p>for an empty program arguments the argv[0] will hold NULL pointer and argc will hold 0.</p>
 <p>we know that the environment variables pointers vector follows the program arguments vector immediately (after the NULL pointer), so we can get the first entry in the evnironment variables vector with argv[1] or with envp[0].</p>
 <p>and that means we can treat the envp[2] pointer as the argv[3] pointer in that case!.</p>

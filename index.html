@@ -128,124 +128,18 @@
   <div class="row">
 	
 	
+		<h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
+<blockquote><p>This is the common format string bug, exploit it with care though as a check is made with argc. What is the layout of a process’s memory? How are programs executed?.</p>
+<footer><strong>overthewire.vortex.</strong><cite><a href="https://overthewire.org/wargames/vortex/vortex4.html" target="_blank" rel="noopener">lvl4-5</a></cite></footer></blockquote>
 
-		
-        
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
-            
-            
-		
+<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
+<p>in this level we exploit a format string vulnerability to gain access to next level’s password, the vulnerability resides in passing a user supplied/controlled input (in this case a program argument) to the printf() function.</p>
+<p>but as we can see the program exits immediately if at least one program argument was supplied, so how can we overcome this obstacle and leverage the vulnerability to dump the vortex5 user’s password ?!.</p>
+<p>the way to overcome this, is to know how the kernel setups the stack layout for the process when it’s first created (there is a lot of blogs/books/papers that explains this in detail so i will not cover it here instead i will just give the initial stack layout up until the moment of main()’s invocation from the startup code).</p>
+<h2 id="The-Stack-Layout"><a href="#The-Stack-Layout" class="headerlink" title="The Stack Layout"></a>The Stack Layout</h2><figure class="highlight plain"><figcaption><span>stack.layout</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">+++++</span><br><span class="line">local variables of main</span><br><span class="line">saved registers of main</span><br><span class="line">return address of main</span><br><span class="line">argc</span><br><span class="line">argv</span><br><span class="line">envp</span><br><span class="line">+++++</span><br><span class="line">stack from startup code</span><br><span class="line">argc</span><br><span class="line">argv pointers</span><br><span class="line">NULL that ends argv[]</span><br><span class="line">environment pointers</span><br><span class="line">NULL that ends envp[]</span><br><span class="line">ELF Auxiliary Table</span><br><span class="line">+++++</span><br><span class="line">argv strings</span><br><span class="line">environment strings</span><br><span class="line">program name</span><br><span class="line">NULL</span><br></pre></td></tr></table></figure>
 
+
+<p>the thing we need to know that if a program was created without arguments vector then the first entry in the argv pointers vector will have NULL, now the trick is that we can overlap the evnironment pointers and the argv pointers vectors !.</p>
 	
 
 	</div>
@@ -257,7 +151,18 @@
   <div class="row">
 	
 	
-		
+		<h1 id="Level-Goal"><a href="#Level-Goal" class="headerlink" title="Level Goal"></a>Level Goal</h1><hr>
+<blockquote><p>This is the common format string bug, exploit it with care though as a check is made with argc. What is the layout of a process’s memory? How are programs executed?.</p>
+<footer><strong>overthewire.vortex.</strong><cite><a href="https://overthewire.org/wargames/vortex/vortex4.html" target="_blank" rel="noopener">lvl4-5</a></cite></footer></blockquote>
+
+<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><hr>
+<p>in this level we exploit a format string vulnerability to gain access to next level’s password, the vulnerability resides in passing a user supplied/controlled input (in this case a program argument) to the printf() function.</p>
+<p>but as we can see the program exits immediately if at least one program argument was supplied, so how can we overcome this obstacle and leverage the vulnerability to dump the vortex5 user’s password ?!.</p>
+<p>the way to overcome this, is to know how the kernel setups the stack layout for the process when it’s first created (there is a lot of blogs/books/papers that explains this in detail so i will not cover it here instead i will just give the initial stack layout up until the moment of main()’s invocation from the startup code).</p>
+<h2 id="The-Stack-Layout"><a href="#The-Stack-Layout" class="headerlink" title="The Stack Layout"></a>The Stack Layout</h2><figure class="highlight plain"><figcaption><span>stack.layout</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">+++++</span><br><span class="line">local variables of main</span><br><span class="line">saved registers of main</span><br><span class="line">return address of main</span><br><span class="line">argc</span><br><span class="line">argv</span><br><span class="line">envp</span><br><span class="line">+++++</span><br><span class="line">stack from startup code</span><br><span class="line">argc</span><br><span class="line">argv pointers</span><br><span class="line">NULL that ends argv[]</span><br><span class="line">environment pointers</span><br><span class="line">NULL that ends envp[]</span><br><span class="line">ELF Auxiliary Table</span><br><span class="line">+++++</span><br><span class="line">argv strings</span><br><span class="line">environment strings</span><br><span class="line">program name</span><br><span class="line">NULL</span><br></pre></td></tr></table></figure>
+
+
+<p>the thing we need to know that if a program was created without arguments vector then the first entry in the argv pointers vector will have NULL, now the trick is that we can overlap the evnironment pointers and the argv pointers vectors !.</p>
 	
 	</div>
   <a type="button" href="/2020/08/04/overthewire-vortex-lvl4-5-md/#more" class="btn btn-default more">Read More</a>
@@ -827,15 +732,15 @@
 		<h4>Tag Cloud</h4>
 		<ul class="tag_box inline list-unstyled">		
 		
-			<li><a href="/tags/linux/">linux<span>21</span></a></li>
-		
-			<li><a href="/tags/overthewire/">overthewire<span>26</span></a></li>
-		
 			<li><a href="/tags/vortex/">vortex<span>5</span></a></li>
 		
 			<li><a href="/tags/ctf/">ctf<span>26</span></a></li>
 		
+			<li><a href="/tags/overthewire/">overthewire<span>26</span></a></li>
+		
 			<li><a href="/tags/wargames/">wargames<span>26</span></a></li>
+		
+			<li><a href="/tags/linux/">linux<span>21</span></a></li>
 		
 		 
 		</ul>
