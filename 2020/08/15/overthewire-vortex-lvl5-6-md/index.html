@@ -13,7 +13,10 @@
 A password is required for the next level. vortex5.c and md5.h. a-z,A-Z,0-9 is the search space. The password length is 5 chars long, it was originally 7 chars long.
 overthewire.vortex.lvl5-6
 
-Solutionthis level is all about brute forcing, we will run through a list of words or generate the possible permutations with 5 characters of the 0-9,a-z,A-Z character search space."> 
+Solutionthis level is all about brute forcing, we will run through a list of words or generate the possible permutations with 5 characters of the 0-9,a-z,A-Z character search space.
+for this i will use  which is an open source password auditing and password recovery tool.
+basically john the ripper will try to MD5 hash the passwords or wordsand compare the resulted hash values with the list of hashes given.
+in the main function we can see that the hash of the accepted password is  155fb95d04287b757c996d77b5ea51f7"> 
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -116,14 +119,16 @@ Solutionthis level is all about brute forcing, we will run through a list of wor
 <footer><strong>overthewire.vortex.</strong><cite><a href="https://overthewire.org/wargames/vortex/vortex5.html" target="_blank" rel="noopener">lvl5-6</a></cite></footer></blockquote>
 
 <h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><p>this level is all about brute forcing, we will run through a list of words or generate the possible permutations with 5 characters of the 0-9,a-z,A-Z character search space.</p>
-<a id="more"></a>
-
 <p>for this i will use <a href="https://www.openwall.com/john/" title="John The Ripper which" target=""></a> which is an open source password auditing and password recovery tool.</p>
 <p>basically john the ripper will try to MD5 hash the passwords or wordsand compare the resulted hash values with the list of hashes given.</p>
 <p>in the main function we can see that the hash of the accepted password is <p style="color:#ff0000;"> 155fb95d04287b757c996d77b5ea51f7 </p></p>
+<a id="more"></a>
+
 <p>so we wil add this hash to the list of hashes file and run JohnTheRipper on it.</p>
 <p><img src="/images/ctf/wargames/overthewire/vortex/lvl5-6/01.png" alt="img01"></p>
-<p>and we successfully dumped the password for user vortex6.</p>
+<p>now we got a match, we can run the vortex5 executable and supply the dumped password.</p>
+<p>great we got a shell as user vortex6, we can dump this user’s password from <strong>/etc/vortex_pass/vortex6</strong> and we are done with this level.</p>
+<p><img src="/images/ctf/wargames/overthewire/vortex/lvl5-6/02.png" alt="img02"></p>
 
 	  
 	</div>
